@@ -1,0 +1,19 @@
+__pycache__
+bin
+.git
+.buildozer
+.vscode
+_env
+z_*
+_saved files
+
+
+*.json
+*.psd
+*.bat
+*.pyc
+*.lock
+
+config.ini
+
+

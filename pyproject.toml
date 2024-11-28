@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "zupasswords-manager"
+version = "0.1.0"
+description = ""
+authors = ["munchou"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.9"
+kivy-reloader = "^0.4.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
