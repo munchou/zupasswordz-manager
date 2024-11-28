@@ -14,8 +14,9 @@
 - Android 9: same as Android 11 and 12, and refuses to write (to export the data) despite granted permissions
 
 # Preview
-![url](repo_imgs/20241124a.png) ![url](repo_imgs/20241124b.png) ![url](repo_imgs/20241124c.png)
-![url](repo_imgs/20241124d.png) ![url](repo_imgs/20241124e.png)
+![url](repo_imgs/20241124a.png) ![url](repo_imgs/20241124b.png)
+![url](repo_imgs/20241124c.png) ![url](repo_imgs/20241124d.png)
+![url](repo_imgs/20241124e.png)
 
 # Pre-requisites
 - Later...
