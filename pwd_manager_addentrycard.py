@@ -12,6 +12,10 @@ from kivy.properties import (
 import pwd_manager_utils
 import uuid
 
+import pwd_manager_languages
+from pwd_manager_languages import Languages
+set_lang = pwd_manager_languages.set_lang
+
 
 class ItemBind(MDListItem):
     app_name = StringProperty(None)
@@ -21,15 +25,25 @@ class ItemBind(MDListItem):
 
 
 class AddEntryCard(MDCard):
-    def __init__(self, **kwargs):
+    entry_title_update = Languages().entry_title_update[set_lang]
+    entry_title_add = Languages().entry_title_add[set_lang]
+    textfield_appname_hint = Languages().textfield_appname_hint[set_lang]
+    textfield_appuser_hint = Languages().textfield_appuser_hint[set_lang]
+    textfield_apppwd_hint = Languages().textfield_apppwd_hint[set_lang]
+    textfield_apppwd_confirm_hint = Languages().textfield_apppwd_confirm_hint[set_lang]
+    textfield_appinfo_hint = Languages().textfield_appinfo_hint[set_lang]
+
+
+    def __init__(self, button_text, **kwargs):
+        self.button_text = button_text
         super(AddEntryCard, self).__init__(**kwargs)
 
     def reset_card(self, **kwargs):
         self.clear_widgets()
 
     id = ""
-    button_text = StringProperty("ADD ENTRY")
-    title_text = "ADD AN ENTRY"
+    button_text = Languages().btn_add_entry[set_lang]
+    # title_text = "ADD AN ENTRY"
 
     app_name_input = ObjectProperty(None)
     app_user_input = ObjectProperty(None)
@@ -105,7 +119,7 @@ class AddEntryCard(MDCard):
         if pwd_manager_utils.app_name_exists(app_name, self.button_text, listscreen):
             return
 
-        if self.button_text == "UPDATE":
+        if self.button_text == Languages().btn_update_entry[set_lang]:
             pwd_manager_utils.update_json(
                 listscreen,
                 id,
@@ -141,7 +155,7 @@ class AddEntryCard(MDCard):
 
         entries_list = listscreen.ids.entries_list
 
-        if self.button_text == "UPDATE":
+        if self.button_text == Languages().btn_update_entry[set_lang]:
             for child in entries_list.children:
                 if child.app_name == listscreen.selected_item:
                     entry_index = entries_list.children.index(child)

@@ -32,8 +32,12 @@ from kivy.properties import (
 
 import os
 import pwd_manager_utils
-from pwd_manager_addentrycard import AddEntryCard
 
+from pwd_manager_addentrycard import AddEntryCard
+from pwd_manager_appdetailspage import AppDetailsPage
+import pwd_manager_languages
+from pwd_manager_languages import Languages
+set_lang = pwd_manager_languages.set_lang
 
 class BottomAppBarButton(MDActionBottomAppBarButton):
     theme_icon_color = "Custom"
@@ -157,6 +161,8 @@ class SearchBar(MDTextField):
 
 
 class ListScreen(MDScreen):
+    searchfield_text = Languages().searchfield_text[set_lang]
+
     selected_item = ""
     top_bar_text = StringProperty("")
     bottom_bar_text = StringProperty("")
@@ -164,24 +170,29 @@ class ListScreen(MDScreen):
 
     def __init__(self, **kwargs):
         super(ListScreen, self).__init__(**kwargs)
+    
+    def appdetailspage(self, selected_item, app_user, app_pwd, app_info):
+        self.new_entry = AppDetailsPage(selected_item, app_user, app_pwd, app_info, md_bg_color=(1, 1, 1, 0.9))
+        self.add_widget(self.new_entry)
+    
+    def remove_appdetailspage(self):
+        self.remove_widget(self.new_entry)
+        self.new_entry = None
 
+    def details_for_app_card(self, selected_item, app_user, app_pwd, app_info):
+        return selected_item, app_user, app_pwd, app_info
+    
     def bottom_bar_change(self, status):
         if status:
             for child in self.ids.entries_list.children:
                 if child.app_name == self.selected_item:
                     current_item = child
                     break
-
             self.ids.bottom_appbar.action_items = [
                 BottomAppBarButton(
                     icon="open-in-new",
                     icon_color=MDApp.get_running_app().theme_cls.listscreenTopAppBarIconColor,
-                    on_release=lambda x: (
-                        pwd_manager_utils.show_message(
-                            self.selected_item,
-                            f"• username/e-mail:\n»»» {current_item.app_user}\n• password:\n»»» {current_item.app_pwd}\n• info:\n»»» {current_item.app_info}",
-                        )
-                    ),
+                    on_release=lambda x: (self.appdetailspage(self.selected_item, current_item.app_user, current_item.app_pwd, current_item.app_info)),
                 ),
                 BottomAppBarButton(
                     icon="pencil",
@@ -199,7 +210,7 @@ class ListScreen(MDScreen):
             )
 
             if len(self.selected_item) > 15:
-                self.bottom_bar_text = f"{self.selected_item[:15]}..."
+                self.bottom_bar_text = f"{self.selected_item[:12]}..."
             else:
                 self.bottom_bar_text = self.selected_item
 
@@ -220,15 +231,6 @@ class ListScreen(MDScreen):
         self.bottom_bar_change(True)
 
     def on_pre_enter(self):
-        # def on_enter(self):
-        dico = {
-            "Amazon": "amazon_pwd",
-            "Netflix": "netflix_pwd",
-            "Gmail": "gmail_pwd",
-        }
-
-        icons = ["pencil", "android", "power"]
-
         user_data = (
             MDApp.get_running_app().screenmanager.get_screen("loginscreen").master_list
         )
@@ -267,7 +269,7 @@ class ListScreen(MDScreen):
             self.bottom_bar_change(False)
 
     def add_card(self):
-        self.new_entry = AddEntryCard(md_bg_color=(1, 1, 1, 0.9))
+        self.new_entry = AddEntryCard(button_text=Languages().btn_add_entry[set_lang], md_bg_color=(1, 1, 1, 0.9))
         self.add_widget(self.new_entry)
 
     def update_card(self):
@@ -276,7 +278,7 @@ class ListScreen(MDScreen):
                 current_item = child
 
         self.new_entry = AddEntryCard(
-            button_text="UPDATE",
+            button_text=Languages().btn_update_entry[set_lang],
             md_bg_color=(1, 1, 1, 0.9),
         )
         self.new_entry.app_name_update = current_item.app_name

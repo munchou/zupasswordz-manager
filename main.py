@@ -1,3 +1,6 @@
+from pwd_manager_utils import initialize_config_file
+initialize_config_file()
+
 from kivymd.app import MDApp
 
 # from kivy_reloader.app import App
@@ -12,20 +15,29 @@ from kivy.core.window import Window
 from kivy.utils import platform as kv_platform
 from kivy.uix.screenmanager import ScreenManager
 from kivy.properties import ObjectProperty
+from kivy.clock import mainthread
 
 import os, sys, plyer
 
 import pwd_manager_utils
+
+import pwd_manager_languages
 from pwd_manager_listscreen import ListScreen
+from pwd_manager_settingspage import SettingsPage
+from pwd_manager_languages import Languages
 from pwd_manager_androidpermissions import AndroidPermissions
 
 # Galazy 22 resolution: 1080*2340
 # minus top and bottom bars -> Wndow.size = 1080, 2115
+
+
+set_lang = pwd_manager_languages.set_lang
+
 if hasattr(sys, "getandroidapilevel"):
     Window.fullscreen = True
-    Window.maximize()
+    # Window.maximize()
 else:
-    Window.size = 414, 736
+    Window.size = 1080/3, 2115/3
 
 
 def unload_file():
@@ -34,12 +46,25 @@ def unload_file():
     BuilderBase().unload_file("passmanager.kv")
 
 
+
+
 class LoginScreen(MDScreen):
+    # text variables
+    main_title = Languages().main_title[set_lang]
+    textfield_username_hint = Languages().textfield_username_hint[set_lang]
+    textfield_password_login_hint = Languages().textfield_password_login_hint[set_lang]
+    btn_login = Languages().btn_login[set_lang]
+    label_not_registered = Languages().label_not_registered[set_lang]
+    textfield_textfield_password_register_hint = Languages().textfield_textfield_password_register_hint[set_lang]
+    textfield_password_confirm_hint = Languages().textfield_password_confirm_hint[set_lang]
+    btn_signin = Languages().btn_signin[set_lang]
+
     username_input = ObjectProperty(None)
     password_input_login = ObjectProperty(None)
     username_input_reg = ObjectProperty(None)
     password_input_reg = ObjectProperty(None)
     password_input_confirm = ObjectProperty(None)
+    new_entry = None
 
     device_id = plyer.uniqueid.id
     new_data = None
@@ -55,6 +80,16 @@ class LoginScreen(MDScreen):
     def __init__(self, **kwargs):
         super(LoginScreen, self).__init__(**kwargs)
         self.username_input.text = "user_test"
+        if pwd_manager_utils.add_user(
+                    pwd_manager_utils.hasher("user_test", ""),
+                    pwd_manager_utils.hasher("password_text", pwd_manager_utils.generate_salt().decode()),
+                    pwd_manager_utils.generate_salt().decode(),
+                    pwd_manager_utils.hasher(self.device_id, pwd_manager_utils.generate_salt().decode()),
+                    self.config_filename,
+                 ) == "user_exists":
+            print("user_test already created")
+        else:
+            print("user_test created")
 
     def on_leave(self, *args):
         self.username_input.text = ""
@@ -96,6 +131,10 @@ class LoginScreen(MDScreen):
         # )
 
     def user_login(self, export, import_backup):
+        msg01 = False
+        msg02 = False
+        msg03 = False
+        msg04 = False
         username_text = self.username_input.text
         current_user = pwd_manager_utils.hasher(username_text, "")
         password_text = self.password_input_login.text
@@ -112,7 +151,54 @@ class LoginScreen(MDScreen):
                 pwd_manager_utils.back_data_prompt(username_text)
                 # pwd_manager_utils.backup_data(username_text, current_user)
             elif import_backup:
-                pwd_manager_utils.load_backup_data(username_text)
+                # pwd_manager_utils.show_message("NOT READY YET", "Sorry, that feature is not yet available due to Android permissions issues.")
+                if kv_platform == "android":
+                    pwd_manager_utils.AndroidGetFile().get_file(username_text)
+                    # get_file, exception_error = pwd_manager_utils.AndroidGetFile().get_file(username_text)
+                    get_file_error = pwd_manager_utils.AndroidGetFile().get_file_error
+                    print("get_file_error:", get_file_error)
+                    get_file_exception = pwd_manager_utils.AndroidGetFile().get_file_exception
+                    apps_added = pwd_manager_utils.AndroidGetFile().apps_added
+                    apps_not_added = pwd_manager_utils.AndroidGetFile().apps_not_added
+                    len_apps = pwd_manager_utils.AndroidGetFile().len_apps
+                    print("apps_added:", apps_added)
+                    print("apps_not_added:", apps_not_added)
+                    print("len_apps:", len_apps)
+                    if get_file_error == "filenotfound":
+                        msg01 = True
+                    elif get_file_error == "permissionerror":
+                        msg02 = True
+                    elif get_file_error == "unknownerror":
+                        msg03 = True
+                    elif get_file_error == "import_OK":
+                        msg04 = True
+
+                    if msg01:
+                        print(f'IMPORT FILE NOT FOUND - The backup file "{username_text}_importbackup.txt" was not found.', get_file_exception)
+                        pwd_manager_utils.show_message("FILE NOT FOUND", f"""The backup file "{username_text}_importbackup.txt" was not found.""")
+                    elif msg02:
+                        print("BACKUP permission error (or something else...)", get_file_exception)
+                        pwd_manager_utils.show_message(
+                            "ERROR - PERMISSIONS DENIED",
+                            f"""An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device."""
+                            )
+                    elif msg03:
+                        print("Unknown error while trying to load the backup file to import. :(")
+                        pwd_manager_utils.show_message(
+                            "UNKNOWN IMPORT ERROR",
+                            f"""An error occurred while trying to load the file...\n\n{get_file_exception}""",
+                        )
+                    elif msg04:
+                        print(
+                        f"{apps_added}/{len_apps} entries were imported.\nApps not imported ({len_apps - apps_added}):\n{apps_not_added[:-2]}"
+                    )
+                        pwd_manager_utils.show_message(
+                            "DATA IMPORTED",
+                            f"{apps_added}/{len_apps} entries were imported.\nApps not imported ({len_apps - apps_added}):\n{apps_not_added[:-2]}"
+                            )
+                    
+                else:
+                    pwd_manager_utils.AndroidGetFile().load_backup_data(username_text, "")
             else:
                 self.make_master_list()
                 self.manager.add_widget(ListScreen(name="listscreen"))
@@ -186,24 +272,46 @@ class LoginScreen(MDScreen):
         self.username_input_reg.text = ""
         self.password_input_reg.text = ""
         self.password_input_confirm.text = ""
+    
+    def settingspage(self):
+        self.new_entry = SettingsPage(md_bg_color=(1, 1, 1, 0.9))
+        self.add_widget(self.new_entry)
+    
+    def remove_settingspage(self):
+        self.remove_widget(self.new_entry)
+        self.new_entry = None
 
-    def set_theme(self, theme):
-        app = MDApp.get_running_app()
-        current_theme = pwd_manager_utils.load_theme()
-        if theme != current_theme:
-            pwd_manager_utils.update_theme(theme)
-            # exit()
-            try:
-                app.screenmanager.remove_widget(
-                    app.screenmanager.get_screen("listscreen")
-                )
-            except:
-                print("The list screen wasn't removed as it hadn't been created yet.")
+    # def set_theme(self, theme):
+    #     app = MDApp.get_running_app()
+    #     current_theme = pwd_manager_utils.load_theme()
+    #     if theme != current_theme:
+    #         pwd_manager_utils.update_theme(theme)
+    #         SettingsPage().set_theme = theme
+    #         # from kivymd.uix.button import MDButton
+    #         # print("SettingsPage().ids", SettingsPage().ids)
+    #         # print('SettingsPage().ids["theme_previews"]', SettingsPage().ids.theme_previews)
+    #         # SettingsPage().ids.theme_previews.add_widget(
+    #         #     MDButton(size_hint=(None, None),
+    #         #              style="filled",
+    #         #              radius=0,
+    #         #              background="img/theme_preview_blue-purple.png",
+    #         #              height="148dp",
+    #         #              width="75dp"))
+    #         if kv_platform == "android":
+    #             pass
+    #         else:
+    #             pass
+    #             # try:
+    #             #     app.screenmanager.remove_widget(
+    #             #         app.screenmanager.get_screen("listscreen")
+    #             #     )
+    #             # except:
+    #             #     print("The list screen wasn't removed as it hadn't been created yet.")
 
-            app.screenmanager.clear_widgets()
-            Builder.unload_file("zupasswordz.kv")
-            app.stop()
-            return PassManagerApp().run()
+    #             # app.screenmanager.clear_widgets()
+    #             # Builder.unload_file("zupasswordz.kv")
+    #             # app.stop()
+    #             # return PassManagerApp().run()
 
     def app_information(self):
         pwd_manager_utils.show_message(
@@ -235,15 +343,15 @@ class PassManagerApp(MDApp):
         super().__init__(**kwargs)
         Builder.load_file("zupasswordz.kv")
     
-    def on_start(self):
-        print("on_start, self.dont_gc")
-        self.dont_gc = AndroidPermissions(self.start_app)  
+    # def on_start(self):
+    #     print("on_start, self.dont_gc")
+    #     self.dont_gc = AndroidPermissions(self.start_app)  
 
-    def start_app(self):
-        self.dont_gc = None
+    # def start_app(self):
+    #     self.dont_gc = None
 
     def build(self):
-        pwd_manager_utils.initialize_config_file()
+        # pwd_manager_utils.initialize_config_file()
         # I am using 3 main colors + regular ones (like )background and white):
         # - background
         # - color1: top/bottom bars
@@ -282,6 +390,24 @@ class PassManagerApp(MDApp):
             color1 = "8d4f32"
             color2 = "b6956c"
             color3 = "b1714e"
+        if selected_theme == "aqua":
+            background_color = "0f3639"
+            white = "FFFFFF"
+            color1 = "086169"
+            color2 = "6db9b7"
+            color3 = "017c8e"
+        if selected_theme == "bloody":
+            background_color = "7b0000"
+            white = "FFFFFF"
+            color1 = "7b0000"
+            color2 = "ff5252"
+            color3 = "cf0000"
+        if selected_theme == "fall":
+            background_color = "843c04"
+            white = "FFFFFF"
+            color1 = "ce7938"
+            color2 = "e9c068"
+            color3 = "e3aa37"
 
         # General
         self.theme_cls.backgroundColor = background_color

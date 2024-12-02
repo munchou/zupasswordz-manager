@@ -2,7 +2,8 @@ import hashlib
 import plyer
 from datetime import datetime
 import json, os
-from os.path import exists, join
+from os.path import exists, join, basename
+import shutil
 import platform
 import configparser
 import bcrypt
@@ -30,9 +31,13 @@ from kivymd.uix.label import MDLabel
 
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
-from kivy.utils import platform as kv_platform
+from kivy.clock import mainthread
 
-from pwd_manager_addentrycard import ItemBind
+from kivy.utils import platform as kv_platform
+if kv_platform == "android":
+    from android.permissions import Permission, request_permissions
+    from androidstorage4kivy import Chooser, SharedStorage
+    from android import api_version
 
 
 FILENAME = "config.ini"
@@ -165,15 +170,23 @@ def check_input(word):
 
 def initialize_config_file(filename=FILENAME):
     parser = ConfigParser()
-    parser.read(filename)
+    parser.read(filename)    
     try:
-        parser.add_section("theme")
-        parser.set("theme", "theme-colors", "blue-purple")
-
+        parser.add_section("language")
+        parser.set("language", "set_language", "ENG")
         with open(filename, "w") as configfile:
             parser.write(configfile)
     except configparser.DuplicateSectionError:
-        pass
+        print("language section already exists")
+        pass      
+    try:
+        parser.add_section("theme")
+        parser.set("theme", "theme-colors", "blue-purple")
+        with open(filename, "w") as configfile:
+            parser.write(configfile)
+    except configparser.DuplicateSectionError:
+        print("theme section already exists")
+        pass   
 
 
 def load_theme(filename=FILENAME):
@@ -220,18 +233,22 @@ def add_user(
 
 
 def app_name_exists(app_name, button_text, listscreen):
+    import pwd_manager_languages
+    from pwd_manager_languages import Languages
+    set_lang = pwd_manager_languages.set_lang
+    
     username = hasher(os.environ.get("pwdzmanuser"), "")
     with open(f"{username}.json", "r") as file:
         user_data = json.load(file)
         apps_names = [decrypt_data(bytes(item[2:-1], "utf-8")) for item in user_data]
         print("apps_names:", apps_names)
-        if app_name in apps_names and button_text != "UPDATE":
+        if app_name in apps_names and button_text != Languages().btn_update_entry[set_lang]:
             show_message(
                 "ERROR",
                 f"{app_name} has already been added. Please update it by selecting it in your list and then clicking the little pencil.",
             )
             return True
-        elif button_text == "UPDATE":
+        elif button_text == Languages().btn_update_entry[set_lang]:
             if app_name in apps_names and app_name != listscreen.selected_item:
                 show_message(
                     "ERROR",
@@ -349,6 +366,7 @@ def remove_entry_json(selected_item, current_item):
 
 
 def add_entry_list(entries_list, id, app_name, app_user, app_pwd, app_info, app_icon):
+    from pwd_manager_addentrycard import ItemBind
     entries_list.add_widget(
         ItemBind(
             MDListItemHeadlineText(
@@ -531,138 +549,160 @@ def check_imported_item(app_user, app_pwd, id):
     return good_input, get_id
 
 
-def load_backup_data(username):
-    """File name must be: "username_importbackup.txt"
-    and must be located in the "Download" folder for Android
-    or at the root of the program for a regular OS.
-    The file system in Android has evolved, it is no longer paths
-    but uri, so using a path will return a 'file not found' or
-    even crash with a 'Errno 13 Permission denied'."""
-
-    available_apps = []
-    available_ids = []
-    apps_added = 0
+class AndroidGetFile:
+    get_file_error = ""
+    get_file_exception = None
+    apps_added = ""
     apps_not_added = ""
+    len_apps = None
 
-    load_path = ""
+    def get_file(self, username):
+        request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])  # get the permissions needed
+        self.username = username
+        print("get_file username:", self.username)
+        self.opened_file = None  # file path to load, None initially, changes later on
+        self.cache = SharedStorage().get_cache_dir()  #  file cache in the private storage (for cleaning purposes)
+        
 
-    if kv_platform == "android": # to get the file from the Download folder and copy it to private storage
-        from android import autoclass
-        from android.permissions import request_permissions, Permission
-        from android.storage import primary_external_storage_path
-        Environment = autoclass('android.os.Environment')
-        """Android < 10 : WRITE_EXTERNAL_STORAGE
-        Android >= 10, android.api < 33 : READ_EXTERNAL_STORAGE
-        Android >= 10, android.api >= 33 : READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO, READ_EXTERNAL_STORAGE
-        That Android >= 10, android.api >= 33 READ_EXTERNAL_STORAGE is for reading from the documents collection."""
-        request_permissions([Permission.WRITE_EXTERNAL_STORAGE,
-                                Permission.READ_EXTERNAL_STORAGE,
-                                Permission.READ_MEDIA_IMAGES,
-                                Permission.READ_MEDIA_VIDEO,
-                                Permission.READ_MEDIA_AUDIO,])
-        # print("Android load_path:", load_path) # /storage/emulated/0
-        # load_path = f"{primary_external_storage_path()}/Documents/"
-        # print("Android load_path 2:", load_path)
-        # from pwd_manager_androidgetfiles import SharedStorage
-        from androidstorage4kivy import SharedStorage
-        print("Running on Android device\nChecking SharedStorage...")
-        print("\n**************TEST 0*********************")
-        test0 = SharedStorage().copy_from_shared(f"/{username}_importbackup.txt")
-        print(test0)
-        print("\n**************TEST 1*********************")
-        print("\tjoin:", join(Environment.DIRECTORY_DOCUMENTS, f"{username}_importbackup.txt"))
-        test1 = SharedStorage().copy_from_shared(join(Environment.DIRECTORY_DOCUMENTS, f"{username}_importbackup.txt"))
-        print(test1)
-        print("\n**************TEST 2*********************")
-        test2 = SharedStorage().copy_from_shared(f"Documents/{username}_importbackup.txt")
-        print(test2)
-        print("\n**************TEST 3*********************")
-        test3 = SharedStorage().copy_from_shared(f"storage/emulated/0/Documents/{username}_importbackup.txt")
-        print(test3)
-        print("\n**************TEST 4*********************")
-        test4 = SharedStorage().copy_from_shared(f"{username}_importbackup.txt")
-        print(test4)
-        print("\n**************TEST 5*********************")
-        test5 = SharedStorage().copy_from_shared("user_test_importbackup.txt")
-        print(test5)
+        # Chooser calls the standard Android browsing dialog and gives us
+        # the ability to address the entire file system:
+        Chooser(self.chooser_callback).choose_content("text/*")
+        
 
+    def chooser_callback(self, uri_list):
+        """ Callback handling the chooser """
+        print("chooser_callback method")
+        print("uri_list:", uri_list)
+        try:
+            for uri in uri_list:               
 
+                # We obtain the file from the Android's "Shared storage", but we can't work with it directly.
+                # We need to first copy it to our app's "Private storage." The callback receives the
+                # 'android.net.Uri' rather than a usual POSIX-style file path. Calling the 'copy_from_shared'
+                # method copies this file to our private storage and returns a normal file path of the
+                # copied file in the private storage:
+                self.opened_file = SharedStorage().copy_from_shared(uri)
 
-    user_data = load_user_json()
-    for item in user_data:
-        id = user_data[item][4]
-        app_name = decrypt_data(bytes(item[2:-1], "utf-8"))
-        print("app_name", app_name, id)
+                self.uri = uri  # just to keep the uri for future reference
+                print("URI:", uri)
+                print("self.opened_file:", self.opened_file)
 
-        available_apps.append(app_name)
-        available_ids.append(id)
+                if self.opened_file is not None:
+                    print("file to import found, importing...")
+                    self.load_backup_data(self.username, self.opened_file)
 
-    print("available_apps:", available_apps)
+                    self.opened_file = None  # reverting file path back to None
+            
+            if self.cache and os.path.exists(self.cache): shutil.rmtree(self.cache)  # cleaning cache
 
-    try:
-        with open(f"{load_path}{username}_importbackup.txt", "r") as file:
-            user_data = file.read()
-            user_data = user_data.split("\n")
-            for item in user_data[1:]:
-                item = item.split(";;;")
-                if len(item) == 6:
-                    app_name = item[0].strip()
-                    print("app_name:", app_name)
-                    id = item[5].strip()
-                    while True:
-                        if id in available_ids:
-                            id = uuid.uuid4().hex
-                            continue
-                        break
-                    if app_name not in available_apps:
-                        app_user = item[1].strip()
-                        app_pwd = item[2].strip()
-                        app_info = item[3].strip()
-                        app_icon = item[4].strip()
-                        good_input, get_id = check_imported_item(app_user, app_pwd, id)
-                        if good_input:
-                            if get_id:
+        except Exception as e:
+            print("\n\tEXCEPTION in chooser_callback:", e)
+            pass
+
+    def load_backup_data(self, username, imported_file):
+        """File name must be: "username_importbackup.txt"
+        and must be located in the "Download" folder for Android
+        or at the root of the program for a regular OS.
+        The file system in Android has evolved, it is no longer paths
+        but uri, so using a path will return a 'file not found' or
+        even crash with a 'Errno 13 Permission denied'."""
+
+        if imported_file == "":
+            imported_file = f"{username}_importbackup.txt"
+
+        print("imported file:", imported_file)
+
+        available_apps = []
+        available_ids = []
+        apps_added = 0
+        apps_not_added = ""
+
+        user_data = load_user_json()
+        for item in user_data:
+            id = user_data[item][4]
+            app_name = decrypt_data(bytes(item[2:-1], "utf-8"))
+            # print("app_name", app_name, id)
+
+            available_apps.append(app_name)
+            available_ids.append(id)
+
+        print("available_apps:", available_apps)
+
+        try:
+            with open(imported_file, "r") as file:
+                user_data = file.read()
+                user_data = user_data.split("\n")
+                for item in user_data[1:]:
+                    item = item.split(";;;")
+                    if len(item) == 6:
+                        app_name = item[0].strip()
+                        print("app_name:", app_name)
+                        id = item[5].strip()
+                        while True:
+                            if id in available_ids:
                                 id = uuid.uuid4().hex
-                            add_to_json(
-                                id, app_name, app_user, app_pwd, app_info, app_icon
-                            )
-                            apps_added += 1
+                                continue
+                            break
+                        if app_name not in available_apps:
+                            app_user = item[1].strip()
+                            app_pwd = item[2].strip()
+                            app_info = item[3].strip()
+                            app_icon = item[4].strip()
+                            good_input, get_id = check_imported_item(app_user, app_pwd, id)
+                            if good_input:
+                                if get_id:
+                                    id = uuid.uuid4().hex
+                                add_to_json(
+                                    id, app_name, app_user, app_pwd, app_info, app_icon
+                                )
+                                apps_added += 1
+                            else:
+                                apps_not_added += f"{app_name}, "
+                                # apps_not_added.append(app_name)
                         else:
                             apps_not_added += f"{app_name}, "
                             # apps_not_added.append(app_name)
                     else:
                         apps_not_added += f"{app_name}, "
                         # apps_not_added.append(app_name)
-                else:
-                    apps_not_added += f"{app_name}, "
-                    # apps_not_added.append(app_name)
-            show_message(
-                "DATA IMPORTED",
-                f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}",
-            )
-            print(
-                f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}"
-            )
+                
+                self.get_file_error = "import_ok"
+                self.apps_added = apps_added
+                self.apps_not_added = apps_not_added
+                self.len_apps = len(user_data[1:])
+                # show_message(
+                #     "DATA IMPORTED",
+                #     f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}",
+                # )
+                # print(
+                #     f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}"
+                # )
 
-    except Exception as e:
-        print("IMPORT EXCEPTION:", e)
-        if e == FileNotFoundError:
-            show_message(
-                "FILE NOT FOUND",
-                f"""The backup file "{username}_importbackup.txt" was not found.""",
-            )
-            print(
-                f'IMPORT FILE NOT FOUND - The backup file "{username}_importbackup.txt" was not found.'
-            )
-        elif e == PermissionError:
-            print("BACKUP permission error (or something else...)")
-            show_message(
-                "ERROR - PERMISSIONS DENIED",
-                f"""An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device.""",
-            )
-        else:
-            print("Unknown error while trying to load the backup file to import. :(")
-            show_message(
-                "UNKNOWN IMPORT ERROR",
-                f"""An error occurred while trying to load the file...\n\n{e}""",
-            )
+                return None, None
+
+        except Exception as e:
+            print("IMPORT EXCEPTION:", e)
+            self.get_file_exception = e
+            if e == FileNotFoundError:
+                self.get_file_error = "filenotfound"
+                # show_message(
+                #     "FILE NOT FOUND",
+                #     f"""The backup file "{username}_importbackup.txt" was not found.""",
+                # )
+                # print(
+                #     f'IMPORT FILE NOT FOUND - The backup file "{username}_importbackup.txt" was not found.'
+                # )
+            elif e == PermissionError:
+                self.get_file_error = "permissionerror"
+                # print("BACKUP permission error (or something else...)")
+                # show_message(
+                #     "ERROR - PERMISSIONS DENIED",
+                #     f"""An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device.""",
+                # )
+            else:
+                self.get_file_error = "unknownerror"
+                # print("Unknown error while trying to load the backup file to import. :(")
+                # show_message(
+                #     "UNKNOWN IMPORT ERROR",
+                #     f"""An error occurred while trying to load the file...\n\n{e}""",
+                # )
