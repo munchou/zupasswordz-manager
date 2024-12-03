@@ -599,6 +599,7 @@ class AndroidGetFile:
             print("\n\tEXCEPTION in chooser_callback:", e)
             pass
 
+    # @mainthread
     def load_backup_data(self, username, imported_file):
         """File name must be: "username_importbackup.txt"
         and must be located in the "Download" folder for Android
@@ -670,13 +671,12 @@ class AndroidGetFile:
                 self.apps_added = apps_added
                 self.apps_not_added = apps_not_added
                 self.len_apps = len(user_data[1:])
-                # show_message(
-                #     "DATA IMPORTED",
-                #     f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}",
-                # )
-                # print(
-                #     f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}"
-                # )
+
+                # MESSAGE POPUP
+                msg_data_imported(apps_added, user_data, apps_not_added)                
+                print(
+                    f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}"
+                )
 
                 return None, None
 
@@ -685,24 +685,39 @@ class AndroidGetFile:
             self.get_file_exception = e
             if e == FileNotFoundError:
                 self.get_file_error = "filenotfound"
-                # show_message(
-                #     "FILE NOT FOUND",
-                #     f"""The backup file "{username}_importbackup.txt" was not found.""",
-                # )
-                # print(
-                #     f'IMPORT FILE NOT FOUND - The backup file "{username}_importbackup.txt" was not found.'
-                # )
+
+                # MESSAGE POPUP
+                msg_file_not_found(username)
+                print(
+                    f'IMPORT FILE NOT FOUND - The backup file "{username}_importbackup.txt" was not found.'
+                )
             elif e == PermissionError:
                 self.get_file_error = "permissionerror"
-                # print("BACKUP permission error (or something else...)")
-                # show_message(
-                #     "ERROR - PERMISSIONS DENIED",
-                #     f"""An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device.""",
-                # )
+
+                # MESSAGE POPUP
+                msg_no_permissions()
+                print("BACKUP permission error (or something else...)")
+                
             else:
                 self.get_file_error = "unknownerror"
-                # print("Unknown error while trying to load the backup file to import. :(")
-                # show_message(
-                #     "UNKNOWN IMPORT ERROR",
-                #     f"""An error occurred while trying to load the file...\n\n{e}""",
-                # )
+
+                # MESSAGE POPUP
+                msg_unknown_error(e)
+                print("Unknown error while trying to load the backup file to import. :(")
+                
+
+@mainthread
+def msg_data_imported(apps_added, user_data, apps_not_added):
+    show_message("DATA IMPORTED", f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}")
+
+@mainthread
+def msg_file_not_found(username):
+    show_message("FILE NOT FOUND", f"""The backup file "{username}_importbackup.txt" was not found.""")
+
+@mainthread
+def msg_no_permissions():
+    show_message("ERROR - PERMISSIONS DENIED", "An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device.")
+
+@mainthread
+def msg_unknown_error(e):
+    show_message("UNKNOWN IMPORT ERROR", f"""An error occurred while trying to load the file...\n\n{e}""")

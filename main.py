@@ -1,14 +1,11 @@
+"""Initializes the config file befre running anything else
+as the language must be set beforehand."""
 from pwd_manager_utils import initialize_config_file
 initialize_config_file()
 
 from kivymd.app import MDApp
-
-# from kivy_reloader.app import App
-# from kivymd.tools.hotreload.app import MDApp
-# from kivy.event import EventDispatcher
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.screenmanager import ScreenManager
-
 
 from kivy.lang import Builder
 from kivy.core.window import Window
@@ -20,16 +17,13 @@ from kivy.clock import mainthread
 import os, sys, plyer
 
 import pwd_manager_utils
-
 import pwd_manager_languages
 from pwd_manager_listscreen import ListScreen
 from pwd_manager_settingspage import SettingsPage
 from pwd_manager_languages import Languages
-from pwd_manager_androidpermissions import AndroidPermissions
 
 # Galazy 22 resolution: 1080*2340
 # minus top and bottom bars -> Wndow.size = 1080, 2115
-
 
 set_lang = pwd_manager_languages.set_lang
 
@@ -46,14 +40,14 @@ def unload_file():
     BuilderBase().unload_file("passmanager.kv")
 
 
-
-
 class LoginScreen(MDScreen):
     # text variables
     main_title = Languages().main_title[set_lang]
     textfield_username_hint = Languages().textfield_username_hint[set_lang]
     textfield_password_login_hint = Languages().textfield_password_login_hint[set_lang]
     btn_login = Languages().btn_login[set_lang]
+    btn_import_data = Languages().btn_import_data[set_lang]
+    btn_export_data = Languages().btn_export_data[set_lang]
     label_not_registered = Languages().label_not_registered[set_lang]
     textfield_textfield_password_register_hint = Languages().textfield_textfield_password_register_hint[set_lang]
     textfield_password_confirm_hint = Languages().textfield_password_confirm_hint[set_lang]
@@ -78,6 +72,9 @@ class LoginScreen(MDScreen):
     master_list = {}
 
     def __init__(self, **kwargs):
+        """LoginScreen's init method where the dummy "user_test" is added in
+        order to test the app without having to create it every time the app
+        is deployed."""
         super(LoginScreen, self).__init__(**kwargs)
         self.username_input.text = "user_test"
         if pwd_manager_utils.add_user(
@@ -92,16 +89,19 @@ class LoginScreen(MDScreen):
             print("user_test created")
 
     def on_leave(self, *args):
+        """on_leave where the variables for the textfields are all
+        reset to an empty string."""
         self.username_input.text = ""
         self.password_input_login.text = ""
         self.username_input_reg.text = ""
         self.password_input_reg.text = ""
         self.password_input_confirm.text = ""
 
-    def confirm_backup(self, confirmation):
-        return confirmation
-
     def make_master_list(self):
+        """A master list of the apps created upon logging in. That list contains
+        all the entries that are decrypted EXCEPT the password and stored in clear.
+        This is to make the search bar faster than having to have to decrypt each
+        entry's field every time it reloads the main list."""
         user_data = pwd_manager_utils.load_user_json()
         for item in user_data:
             id = user_data[item][4]
@@ -109,9 +109,8 @@ class LoginScreen(MDScreen):
             app_user = pwd_manager_utils.decrypt_data(
                 bytes(user_data[item][0][2:-1], "utf-8")
             )
-            app_pwd = pwd_manager_utils.decrypt_data(
-                bytes(user_data[item][1][2:-1], "utf-8")
-            )
+            # app_pwd = pwd_manager_utils.decrypt_data(bytes(user_data[item][1][2:-1], "utf-8"))
+            app_pwd = user_data[item][1]
             app_info = pwd_manager_utils.decrypt_data(
                 bytes(user_data[item][2][2:-1], "utf-8")
             )
@@ -124,11 +123,6 @@ class LoginScreen(MDScreen):
                 app_icon,
                 id,
             ]
-
-        # self.master_list = sorted(
-        #     self.master_list,
-        #     reverse=True,
-        # )
 
     def user_login(self, export, import_backup):
         msg01 = False
@@ -274,10 +268,13 @@ class LoginScreen(MDScreen):
         self.password_input_confirm.text = ""
     
     def settingspage(self):
+        """Adds the settings page (widget) to the login screen."""
         self.new_entry = SettingsPage(md_bg_color=(1, 1, 1, 0.9))
         self.add_widget(self.new_entry)
     
     def remove_settingspage(self):
+        """Removes the settings page (widget) that was added
+        to the login screen"""
         self.remove_widget(self.new_entry)
         self.new_entry = None
 
@@ -316,18 +313,19 @@ class LoginScreen(MDScreen):
     def app_information(self):
         pwd_manager_utils.show_message(
             "ZUPAsswordz Manager",
-            """©munchou 2024
+            """©munchou 2024, version nfy-241203
 
 Tools of the trade: Python 3.10.2,
 Kivy 2.3.0 and Kivy MD 2.0.1 (dev0).
 And love. And time. And tears of blood...
 
-The code is Open Source, feel free to study it, improve the app or reuse part of it. Do not hesitate to contact me for a collab'!
-github.com/munchou/zupasswords-manager
+The code is Open Source, feel free to study it, improve the app or reuse part of it.
+github.com/munchou/zupasswordz-manager
 
-Commercial use in any way is NOT allowed. Kindly contact before backstabbing, I'll put on my shiniest Leonardo's shell. Thanks.
+Commercial use in any way is NOT allowed.
 
-Special thanks to Martin (OWDD), Snu and Cheaterman (both Kivy Discord)""",
+Special thanks to: Martin (OWDD)
+Snu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec (Kivy Discord)""",
         )
 
 
@@ -342,13 +340,6 @@ class PassManagerApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         Builder.load_file("zupasswordz.kv")
-    
-    # def on_start(self):
-    #     print("on_start, self.dont_gc")
-    #     self.dont_gc = AndroidPermissions(self.start_app)  
-
-    # def start_app(self):
-    #     self.dont_gc = None
 
     def build(self):
         # pwd_manager_utils.initialize_config_file()

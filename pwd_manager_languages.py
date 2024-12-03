@@ -58,6 +58,8 @@ class Languages:
     textfield_password_login_hint = {"ENG": "password", "FRE": "mot de passe", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     
     btn_login = {"ENG": "LOG IN", "FRE": "CONNEXION", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
+    btn_import_data = {"ENG": "IMPORT DATA", "FRE": "IMPORT. DONNEES", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
+    btn_export_data = {"ENG": "EXPORT DATA", "FRE": "EXPORT. DONNEES", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     
     label_not_registered = {"ENG": "Not registered? Create an account", "FRE": "Pas de compte? S'inscrire", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     

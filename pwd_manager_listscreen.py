@@ -187,6 +187,7 @@ class ListScreen(MDScreen):
             for child in self.ids.entries_list.children:
                 if child.app_name == self.selected_item:
                     current_item = child
+                    print("current_item.app_pwd:", current_item.app_pwd)
                     break
             self.ids.bottom_appbar.action_items = [
                 BottomAppBarButton(
@@ -240,7 +241,7 @@ class ListScreen(MDScreen):
             id = user_data[item][4]
             app_name = item
             app_user = user_data[item][0]
-            app_pwd = user_data[item][1]
+            app_pwd = pwd_manager_utils.decrypt_data(bytes(user_data[item][1][2:-1], "utf-8"))
             app_info = user_data[item][2]
             app_icon = user_data[item][3]
 

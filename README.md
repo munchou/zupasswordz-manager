@@ -13,7 +13,7 @@
 - Android 12 and 11: code issue, cannot get the URI of the file to import (from "Documents", in my case)
 - Android 9: same as Android 11 and 12, and refuses to write (to export the data) despite granted permissions
 
-# Preview
+# Preview (2024/11/28)
 <p align="center"><img src="repo_imgs/20241124a.png" alt="" width="300"> <img src="repo_imgs/20241124b.png" alt="" width="300"></p>
 <p align="center"><img src="repo_imgs/20241124c.png" alt="" width="300"> <img src="repo_imgs/20241124d.png" alt="" width="300"></p>
 <p align="center"><img src="repo_imgs/20241124e.png" alt="" width="300"></p>
