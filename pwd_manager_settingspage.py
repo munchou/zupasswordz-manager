@@ -1,7 +1,8 @@
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 
-from kivy.properties import ObjectProperty
+from kivy.core.window import Window
+from kivy.properties import ObjectProperty, BooleanProperty
 
 import pwd_manager_utils
 
@@ -14,13 +15,38 @@ class SettingsPage(MDCard):
     # text variables
     btn_settings_apply = Languages().btn_settings_apply[set_lang]
     title_text = Languages().settings_title[set_lang]
-
     current_theme = ObjectProperty(None)
+
+    removed = BooleanProperty()
 
 
     def __init__(self, **kwargs):
         super(SettingsPage, self).__init__(**kwargs)
         self.current_theme = pwd_manager_utils.load_theme()
+        Window.bind(on_keyboard=self.esc_or_backbutton)
+        self.removed = False
+
+
+    def unbind_key(self):
+        Window.bind(on_keyboard=self.esc_or_backbutton)
+
+
+    def esc_or_backbutton(self, window, key, *largs):
+        if key == 27:
+            if not self.removed:
+                self.parent.remove_widget(self)
+                self.removed = True
+                self.unbind_key()
+                return True
+
+            # try:
+            #     self.parent.remove_widget(self)
+            #     # self.removed = True
+            #     return True
+            # except Exception as e:
+            #     print("SettingsPage backbutton:", e)
+            
+
 
     
     def set_theme(self, theme):

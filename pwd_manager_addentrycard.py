@@ -4,9 +4,11 @@ from kivymd.uix.list import (
     MDListItem,
 )
 
+from kivy.core.window import Window
 from kivy.properties import (
     ObjectProperty,
     StringProperty,
+    BooleanProperty,
 )
 
 import pwd_manager_utils
@@ -32,11 +34,30 @@ class AddEntryCard(MDCard):
     textfield_apppwd_hint = Languages().textfield_apppwd_hint[set_lang]
     textfield_apppwd_confirm_hint = Languages().textfield_apppwd_confirm_hint[set_lang]
     textfield_appinfo_hint = Languages().textfield_appinfo_hint[set_lang]
+    
+    removed = BooleanProperty()
 
 
     def __init__(self, button_text, **kwargs):
         self.button_text = button_text
         super(AddEntryCard, self).__init__(**kwargs)
+        Window.bind(on_keyboard=self.esc_or_backbutton)
+        self.removed = False
+
+
+    def unbind_key(self):
+        Window.bind(on_keyboard=self.esc_or_backbutton)
+
+
+    def esc_or_backbutton(self, window, key, *largs):
+        if key == 27:
+            if not self.removed:
+                MDApp.get_running_app().root.current_screen.reset_selected()
+                self.parent.remove_widget(self)
+                self.removed = True
+                self.unbind_key()
+                return True
+            
 
     def reset_card(self, **kwargs):
         self.clear_widgets()

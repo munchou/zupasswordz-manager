@@ -2,7 +2,8 @@ from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 
 from kivy.core.clipboard import Clipboard
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.core.window import Window
+from kivy.properties import ObjectProperty, StringProperty, BooleanProperty
 
 import pwd_manager_languages
 from pwd_manager_languages import Languages
@@ -20,6 +21,8 @@ class AppDetailsPage(MDCard):
     app_info = StringProperty()
     pwd_display = StringProperty("********")
 
+    removed = BooleanProperty()
+
     
     def __init__(self, selected_item, app_user, app_pwd, app_info, **kwargs):
         super(AppDetailsPage, self).__init__(**kwargs)
@@ -27,6 +30,22 @@ class AppDetailsPage(MDCard):
         self.app_user = app_user
         self.app_pwd = app_pwd
         self.app_info = app_info
+        Window.bind(on_keyboard=self.esc_or_backbutton)
+        self.removed = False
+
+
+    def unbind_key(self):
+        Window.bind(on_keyboard=self.esc_or_backbutton)
+
+
+    def esc_or_backbutton(self, window, key, *largs):
+        if key == 27:
+            if not self.removed:
+                MDApp.get_running_app().root.current_screen.reset_selected()
+                self.parent.remove_widget(self)
+                self.removed = True
+                self.unbind_key()
+                return True
 
     def hide_pwd(self):
         self.pwd_display = "********"

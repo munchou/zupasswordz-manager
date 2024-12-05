@@ -10,6 +10,7 @@ import bcrypt
 import base64
 import gc
 import uuid
+import locale
 
 from configparser import ConfigParser
 from cryptography.fernet import Fernet
@@ -74,13 +75,18 @@ def process_message(message):
 def show_message(title, message):
     message, height = process_message(message)
     backup = False
+    close_app = False
 
     if "[backup]" in title:
         title = title.replace("[backup]", "")
         backup = True
+    
+    if "[close_app]" in title:
+        title = title.replace("[close_app]", "")
+        close_app = True
 
     btn_ok = Button(
-        text="OK" if not backup else "CONFIRM BACK UP",
+        text= "CONFIRM BACK UP" if backup else "YES, PLEASE" if close_app else "OK",
         background_color=MDApp.get_running_app().theme_cls.popupButtonBg,
         background_normal="",
         size_hint=(0.4, None) if not backup else (0.6, None),
@@ -125,6 +131,11 @@ def show_message(title, message):
         update_btns_layout.add_widget(btn_ok)
         update_btns_layout.add_widget(btn_close)
         layout.add_widget(update_btns_layout)
+    
+    if close_app:
+        update_btns_layout.add_widget(btn_ok)
+        update_btns_layout.add_widget(btn_close)
+        layout.add_widget(update_btns_layout)
 
     else:
         layout.add_widget(btn_ok)
@@ -146,6 +157,9 @@ def show_message(title, message):
     if backup:
         username = os.environ.get("pwdzmanuser")
         btn_ok.bind(on_release=lambda x: backup_data(username))
+    
+    if close_app:
+        btn_ok.bind(on_release=lambda x: exit())
 
     btn_ok.bind(on_release=popup.dismiss)
     btn_close.bind(on_release=popup.dismiss)
@@ -168,12 +182,33 @@ def check_input(word):
     return False
 
 
+"""
+en_US
+fr_FR
+it_IT
+es_ES
+ja_JP
+"""
+
+def check_system_language():
+    """Checks the system language so that the language of the app will be set
+    to it, if it exists. Otherwise, it is set to "ENG"."""
+    locale.setlocale(locale.LC_ALL, "")
+    available_languages = {"en": "ENG", "fr": "FRE", "ja": "JAP", "it": "ITA", "es": "SPA", "de": "GER"}
+    user_lang = locale.getlocale(locale.LC_MESSAGES)[0] # or os.environ['LANG'] # ENG -> en_US
+    print("USER SYSTEM LANGUAGE:", user_lang, "/", user_lang[:2])
+    if user_lang[:2] in available_languages:
+        return available_languages[user_lang[:2]]
+    return "ENG"
+
+
 def initialize_config_file(filename=FILENAME):
     parser = ConfigParser()
-    parser.read(filename)    
+    parser.read(filename)
     try:
+        language_to_set = check_system_language()
         parser.add_section("language")
-        parser.set("language", "set_language", "ENG")
+        parser.set("language", "set_language", language_to_set)
         with open(filename, "w") as configfile:
             parser.write(configfile)
     except configparser.DuplicateSectionError:
@@ -481,7 +516,7 @@ def decrypt_data(data):
     return decrypted_message
 
 
-def back_data_prompt(username):
+def backup_data_prompt():
     show_message(
         "BACK UP DATA?[backup]",
         """You are about to back your data up.\n\nBeware! The exported data will NOT be encrypted, so anyone who has access to it will have access to your passwords! \nDon't lose it and keep it safe!""",

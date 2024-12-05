@@ -20,6 +20,7 @@ from kivymd.uix.card import MDCard
 #     ImageLeftWidgetWithoutTouch,
 # )
 # from kivymd.uix.button import MDRectangleFlatButton
+from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
@@ -64,6 +65,7 @@ class SearchBar(MDTextField):
 
     def on_focus(self, instance, input_text):
         super(SearchBar, self).on_focus(instance, input_text)
+        MDApp.get_running_app().root.current_screen.reset_selected()
 
     def refresh_lists(self, new_list):
         self.master_list = new_list
@@ -92,6 +94,7 @@ class SearchBar(MDTextField):
             app_name = item
             app_user = user_data[item][0]
             app_pwd = user_data[item][1]
+            print("\n\tPWD:", user_data[item][1])
             app_info = user_data[item][2]
             app_icon = user_data[item][3]
 
@@ -163,13 +166,21 @@ class SearchBar(MDTextField):
 class ListScreen(MDScreen):
     searchfield_text = Languages().searchfield_text[set_lang]
 
-    selected_item = ""
+    selected_item = StringProperty()
     top_bar_text = StringProperty("")
     bottom_bar_text = StringProperty("")
     new_entry = None
 
     def __init__(self, **kwargs):
         super(ListScreen, self).__init__(**kwargs)
+        Window.bind(on_keyboard=self.esc_or_backbutton)
+
+
+    def esc_or_backbutton(self, window, key, *largs):
+        if key == 27:
+            pass
+            return True
+        
     
     def appdetailspage(self, selected_item, app_user, app_pwd, app_info):
         self.new_entry = AppDetailsPage(selected_item, app_user, app_pwd, app_info, md_bg_color=(1, 1, 1, 0.9))
@@ -177,6 +188,7 @@ class ListScreen(MDScreen):
     
     def remove_appdetailspage(self):
         self.remove_widget(self.new_entry)
+        self.reset_selected()
         self.new_entry = None
 
     def details_for_app_card(self, selected_item, app_user, app_pwd, app_info):
@@ -193,7 +205,11 @@ class ListScreen(MDScreen):
                 BottomAppBarButton(
                     icon="open-in-new",
                     icon_color=MDApp.get_running_app().theme_cls.listscreenTopAppBarIconColor,
-                    on_release=lambda x: (self.appdetailspage(self.selected_item, current_item.app_user, current_item.app_pwd, current_item.app_info)),
+                    on_release=lambda x: (self.appdetailspage(self.selected_item,
+                                                              current_item.app_user,
+                                                              pwd_manager_utils.decrypt_data(bytes(current_item.app_pwd[2:-1], "utf-8")),
+                                                              current_item.app_info,
+                                                              )),
                 ),
                 BottomAppBarButton(
                     icon="pencil",
@@ -241,7 +257,7 @@ class ListScreen(MDScreen):
             id = user_data[item][4]
             app_name = item
             app_user = user_data[item][0]
-            app_pwd = pwd_manager_utils.decrypt_data(bytes(user_data[item][1][2:-1], "utf-8"))
+            app_pwd = user_data[item][1] #pwd_manager_utils.decrypt_data(bytes(user_data[item][1][2:-1], "utf-8"))
             app_info = user_data[item][2]
             app_icon = user_data[item][3]
 
@@ -312,6 +328,7 @@ class ListScreen(MDScreen):
         os.environ["pwdzmanuser"] = ""
         self.selected_item = ""
         self.ids.entries_list.clear_widgets()
+        self.manager.get_screen("loginscreen").bind_key()
         self.manager.current = "loginscreen"
         self.manager.get_screen("listscreen").clear_widgets()
         self.manager.remove_widget(self.manager.get_screen("listscreen"))

@@ -52,19 +52,20 @@ set_lang = load_language()
 
 class Languages:
     # LOGIN SCREEN (some are common with other screens)
-    main_title = {"ENG": "Welcome", "FRE": "Bienvenue", "JAP": "youkoso", "ITA": "", "SPA": "", "VN": ""}
+
+    main_title = {"ENG": "Welcome", "FRE": "Bienvenue", "JAP": "ようこそ", "ITA": "", "SPA": "", "VN": ""}
     
-    textfield_username_hint = {"ENG": "username", "FRE": "nom d'utilisateur", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
-    textfield_password_login_hint = {"ENG": "password", "FRE": "mot de passe", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
+    textfield_username_hint = {"ENG": "username", "FRE": "nom d'utilisateur", "JAP": "ようこそ", "ITA": "", "SPA": "", "VN": ""} # cannot change font_name, so JAP not possible here
+    textfield_password_login_hint = {"ENG": "password", "FRE": "mot de passe", "JAP": "ようこそ", "ITA": "", "SPA": "", "VN": ""} # cannot change font_name, so JAP not possible here
     
-    btn_login = {"ENG": "LOG IN", "FRE": "CONNEXION", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
+    btn_login = {"ENG": "LOG IN", "FRE": "CONNEXION", "JAP": "ログイン", "ITA": "", "SPA": "", "VN": ""}
     btn_import_data = {"ENG": "IMPORT DATA", "FRE": "IMPORT. DONNEES", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     btn_export_data = {"ENG": "EXPORT DATA", "FRE": "EXPORT. DONNEES", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     
     label_not_registered = {"ENG": "Not registered? Create an account", "FRE": "Pas de compte? S'inscrire", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     
-    textfield_textfield_password_register_hint = {"ENG": "password (8 characters min.)", "FRE": "mot de passe (8 caract. min.)", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
-    textfield_password_confirm_hint = {"ENG": "confirm password", "FRE": "confirmer le mot de passe", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
+    textfield_textfield_password_register_hint = {"ENG": "password (8 characters min.)", "FRE": "mot de passe (8 caract. min.)", "JAP": "password (8 characters min.)", "ITA": "", "SPA": "", "VN": ""}
+    textfield_password_confirm_hint = {"ENG": "confirm password", "FRE": "confirmer le mot de passe", "JAP": "confirm password", "ITA": "", "SPA": "", "VN": ""}
     
     btn_signin = {"ENG": "SIGN IN", "FRE": "INSCRIPTION", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     
@@ -78,11 +79,11 @@ class Languages:
     btn_add_entry = {"ENG": "ADD ENTRY", "FRE": "CONFIRMER", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     btn_update_entry = {"ENG": "UPDATE", "FRE": "MODIFIER", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     
-    textfield_appname_hint = {"ENG": "name of the app/website", "FRE": "nom de l'app ou du site", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
-    textfield_appuser_hint = {"ENG": "username/e-mail", "FRE": "nom d'utilisateur/e-mail", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
-    textfield_apppwd_hint = {"ENG": "password (8 characters min.)", "FRE": "mot de passe (8 caract. min.)", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
-    textfield_apppwd_confirm_hint = {"ENG": "confirm password", "FRE": "confirmer le mot de passe", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
-    textfield_appinfo_hint = {"ENG": "description (optional)", "FRE": "description (optionelle)", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
+    textfield_appname_hint = {"ENG": "name of the app/website", "FRE": "nom de l'app ou du site", "JAP": "name of the app/website", "ITA": "", "SPA": "", "VN": ""}
+    textfield_appuser_hint = {"ENG": "username/e-mail", "FRE": "nom d'utilisateur/e-mail", "JAP": "username/e-mail", "ITA": "", "SPA": "", "VN": ""}
+    textfield_apppwd_hint = {"ENG": "password (8 characters min.)", "FRE": "mot de passe (8 caract. min.)", "JAP": "password (8 characters min.)", "ITA": "", "SPA": "", "VN": ""}
+    textfield_apppwd_confirm_hint = {"ENG": "confirm password", "FRE": "confirmer le mot de passe", "JAP": "confirm password", "ITA": "", "SPA": "", "VN": ""}
+    textfield_appinfo_hint = {"ENG": "description (optional)", "FRE": "description (optionelle)", "JAP": "description (optional)", "ITA": "", "SPA": "", "VN": ""}
     # textfield_ = {"ENG": "", "FRE": "", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     # textfield_ = {"ENG": "", "FRE": "", "JAP": "", "ITA": "", "SPA": "", "VN": ""}
     # textfield_ = {"ENG": "", "FRE": "", "JAP": "", "ITA": "", "SPA": "", "VN": ""}

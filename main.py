@@ -13,6 +13,8 @@ from kivy.utils import platform as kv_platform
 from kivy.uix.screenmanager import ScreenManager
 from kivy.properties import ObjectProperty
 from kivy.clock import mainthread
+from kivy.config import Config
+from kivy.resources import resource_add_path
 
 import os, sys, plyer
 
@@ -26,6 +28,10 @@ from pwd_manager_languages import Languages
 # minus top and bottom bars -> Wndow.size = 1080, 2115
 
 set_lang = pwd_manager_languages.set_lang
+Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
+Window.softinput_mode = "below_target"
+
+resource_add_path("fonts/")
 
 if hasattr(sys, "getandroidapilevel"):
     Window.fullscreen = True
@@ -71,11 +77,13 @@ class LoginScreen(MDScreen):
     white = 1, 1, 1, 0.5
     master_list = {}
 
+
     def __init__(self, **kwargs):
         """LoginScreen's init method where the dummy "user_test" is added in
         order to test the app without having to create it every time the app
         is deployed."""
         super(LoginScreen, self).__init__(**kwargs)
+        Window.bind(on_keyboard=self.esc_or_backbutton)
         self.username_input.text = "user_test"
         if pwd_manager_utils.add_user(
                     pwd_manager_utils.hasher("user_test", ""),
@@ -88,6 +96,25 @@ class LoginScreen(MDScreen):
         else:
             print("user_test created")
 
+
+    def bind_key(self):
+        print("BIND KEY MAIN SCREEN")
+        Window.bind(on_keyboard=self.esc_or_backbutton)
+
+
+    def unbind_key(self):
+        print("UNBIND KEY MAIN SCREEN")
+        Window.unbind(on_keyboard=self.esc_or_backbutton)
+
+
+    def esc_or_backbutton(self, window, key, *largs):
+        print("esc_or_backbutton")
+        if key == 27:
+            pwd_manager_utils.show_message("Buhbye?[close_app]", "Close the app and get back to your sad routine?")
+            # self.removed = True
+            return True
+
+
     def on_leave(self, *args):
         """on_leave where the variables for the textfields are all
         reset to an empty string."""
@@ -97,11 +124,14 @@ class LoginScreen(MDScreen):
         self.password_input_reg.text = ""
         self.password_input_confirm.text = ""
 
+
     def make_master_list(self):
         """A master list of the apps created upon logging in. That list contains
-        all the entries that are decrypted EXCEPT the password and stored in clear.
-        This is to make the search bar faster than having to have to decrypt each
-        entry's field every time it reloads the main list."""
+        all the entries that are decrypted and stored in clear, EXCEPT the password.
+        The password is decrypted only when the user wants to check an entry's details.
+        This is to make the generating of the list faster after the each use of the
+        search bar, instead of having to have to decrypt each entry's field every time
+        the new list is generated."""
         user_data = pwd_manager_utils.load_user_json()
         for item in user_data:
             id = user_data[item][4]
@@ -125,10 +155,14 @@ class LoginScreen(MDScreen):
             ]
 
     def user_login(self, export, import_backup):
-        msg01 = False
-        msg02 = False
-        msg03 = False
-        msg04 = False
+        """Checks the user's username and password inputs.
+        Import and export buttons depend on whether the user entered the
+        right inputs. If no mistake, the methods are called.
+        Import  -> if Android, will ask for permissions, show the file chooser
+        then processes the selected TXT file.
+                -> if regular PC, directly processes the file that must be named
+        "username_importbackup.txt".
+        Export  -> if Android, """
         username_text = self.username_input.text
         current_user = pwd_manager_utils.hasher(username_text, "")
         password_text = self.password_input_login.text
@@ -142,59 +176,16 @@ class LoginScreen(MDScreen):
             current_user_env = os.environ["pwdzmanuser"]
             # print(f"\n\t{current_user_env}'s password:", os.environ["pwdzmanpwd"])
             if export:
-                pwd_manager_utils.back_data_prompt(username_text)
+                pwd_manager_utils.backup_data_prompt()
                 # pwd_manager_utils.backup_data(username_text, current_user)
             elif import_backup:
-                # pwd_manager_utils.show_message("NOT READY YET", "Sorry, that feature is not yet available due to Android permissions issues.")
                 if kv_platform == "android":
-                    pwd_manager_utils.AndroidGetFile().get_file(username_text)
-                    # get_file, exception_error = pwd_manager_utils.AndroidGetFile().get_file(username_text)
-                    get_file_error = pwd_manager_utils.AndroidGetFile().get_file_error
-                    print("get_file_error:", get_file_error)
-                    get_file_exception = pwd_manager_utils.AndroidGetFile().get_file_exception
-                    apps_added = pwd_manager_utils.AndroidGetFile().apps_added
-                    apps_not_added = pwd_manager_utils.AndroidGetFile().apps_not_added
-                    len_apps = pwd_manager_utils.AndroidGetFile().len_apps
-                    print("apps_added:", apps_added)
-                    print("apps_not_added:", apps_not_added)
-                    print("len_apps:", len_apps)
-                    if get_file_error == "filenotfound":
-                        msg01 = True
-                    elif get_file_error == "permissionerror":
-                        msg02 = True
-                    elif get_file_error == "unknownerror":
-                        msg03 = True
-                    elif get_file_error == "import_OK":
-                        msg04 = True
-
-                    if msg01:
-                        print(f'IMPORT FILE NOT FOUND - The backup file "{username_text}_importbackup.txt" was not found.', get_file_exception)
-                        pwd_manager_utils.show_message("FILE NOT FOUND", f"""The backup file "{username_text}_importbackup.txt" was not found.""")
-                    elif msg02:
-                        print("BACKUP permission error (or something else...)", get_file_exception)
-                        pwd_manager_utils.show_message(
-                            "ERROR - PERMISSIONS DENIED",
-                            f"""An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device."""
-                            )
-                    elif msg03:
-                        print("Unknown error while trying to load the backup file to import. :(")
-                        pwd_manager_utils.show_message(
-                            "UNKNOWN IMPORT ERROR",
-                            f"""An error occurred while trying to load the file...\n\n{get_file_exception}""",
-                        )
-                    elif msg04:
-                        print(
-                        f"{apps_added}/{len_apps} entries were imported.\nApps not imported ({len_apps - apps_added}):\n{apps_not_added[:-2]}"
-                    )
-                        pwd_manager_utils.show_message(
-                            "DATA IMPORTED",
-                            f"{apps_added}/{len_apps} entries were imported.\nApps not imported ({len_apps - apps_added}):\n{apps_not_added[:-2]}"
-                            )
-                    
+                    pwd_manager_utils.AndroidGetFile().get_file(username_text)                    
                 else:
                     pwd_manager_utils.AndroidGetFile().load_backup_data(username_text, "")
             else:
                 self.make_master_list()
+                self.unbind_key()
                 self.manager.add_widget(ListScreen(name="listscreen"))
                 self.manager.current = "listscreen"
             # else:
@@ -315,7 +306,7 @@ class LoginScreen(MDScreen):
             "ZUPAsswordz Manager",
             """©munchou 2024, version nfy-241203
 
-Tools of the trade: Python 3.10.2,
+Tools of the trade: Python 3.10.2
 Kivy 2.3.0 and Kivy MD 2.0.1 (dev0).
 And love. And time. And tears of blood...
 
@@ -339,9 +330,18 @@ class PassManagerApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Builder.load_file("zupasswordz.kv")
+        # Builder.load_file("zupasswordz.kv")
+        with open("zupasswordz.kv", "r", encoding="utf-8") as kivy_file:
+            Builder.load_string(kivy_file.read())
 
     def build(self):
+        if set_lang == "JAP":
+            from kivy.core.text import LabelBase, DEFAULT_FONT
+            LabelBase.register(DEFAULT_FONT, "Meiryo.ttf")
+            # LabelBase.register(name="meiryo", fn_regular="Meiryo.ttf")
+            print("/n/tMEIRYO FONT PATH:", DEFAULT_FONT)
+            print("Font meiryo registered")
+
         # pwd_manager_utils.initialize_config_file()
         # I am using 3 main colors + regular ones (like )background and white):
         # - background
