@@ -28,8 +28,10 @@ from pwd_manager_languages import Languages
 # minus top and bottom bars -> Wndow.size = 1080, 2115
 
 set_lang = pwd_manager_languages.set_lang
+
 Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
 Window.softinput_mode = "below_target"
+# Window.softinput_mode = "pan" # moves the whole screen above the keyboard, regardless of the position of the input box
 
 resource_add_path("fonts/")
 
@@ -48,16 +50,16 @@ def unload_file():
 
 class LoginScreen(MDScreen):
     # text variables
-    main_title = Languages().main_title[set_lang]
-    textfield_username_hint = Languages().textfield_username_hint[set_lang]
-    textfield_password_login_hint = Languages().textfield_password_login_hint[set_lang]
-    btn_login = Languages().btn_login[set_lang]
-    btn_import_data = Languages().btn_import_data[set_lang]
-    btn_export_data = Languages().btn_export_data[set_lang]
-    label_not_registered = Languages().label_not_registered[set_lang]
-    textfield_textfield_password_register_hint = Languages().textfield_textfield_password_register_hint[set_lang]
-    textfield_password_confirm_hint = Languages().textfield_password_confirm_hint[set_lang]
-    btn_signin = Languages().btn_signin[set_lang]
+    main_title = Languages().main_title
+    textfield_username_hint = Languages().textfield_username_hint
+    textfield_password_login_hint = Languages().textfield_password_login_hint
+    btn_login = Languages().btn_login
+    btn_import_data = Languages().btn_import_data
+    btn_export_data = Languages().btn_export_data
+    label_not_registered = Languages().label_not_registered
+    textfield_textfield_password_register_hint = Languages().textfield_textfield_password_register_hint
+    textfield_password_confirm_hint = Languages().textfield_password_confirm_hint
+    btn_signin = Languages().btn_signin
 
     username_input = ObjectProperty(None)
     password_input_login = ObjectProperty(None)
@@ -110,7 +112,7 @@ class LoginScreen(MDScreen):
     def esc_or_backbutton(self, window, key, *largs):
         print("esc_or_backbutton")
         if key == 27:
-            pwd_manager_utils.show_message("Buhbye?[close_app]", "Close the app and get back to your sad routine?")
+            pwd_manager_utils.show_message(Languages().msg_close_app_title, Languages().msg_close_app_content)
             # self.removed = True
             return True
 
@@ -189,16 +191,12 @@ class LoginScreen(MDScreen):
                 self.manager.add_widget(ListScreen(name="listscreen"))
                 self.manager.current = "listscreen"
             # else:
-            #     pwd_manager_utils.show_message(
-            #         "ERROR", "username does not exist or wrong password"
-            #     )
+            #     pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_wrong_user_or_pwd)
             #     self.username_input.text = ""
             #     self.password_input_login.text = ""
 
         else:
-            pwd_manager_utils.show_message(
-                "ERROR", "username does not exist or wrong password"
-            )
+            pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_wrong_user_or_pwd)
             self.username_input.text = ""
             self.password_input_login.text = ""
 
@@ -209,26 +207,18 @@ class LoginScreen(MDScreen):
         password_confirm_text = self.password_input_confirm.text
 
         if not pwd_manager_utils.check_input(username_text):
-            pwd_manager_utils.show_message(
-                "ERROR",
-                "Invalid characters in the username 123490 Invalid characters\nin the username 123490 Invalid\ncharacters in \n the username 123490",
-            )
+            pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_invalid_char_username)
             user_data = False
         else:
             if len(password_text) >= 8:
                 if not pwd_manager_utils.check_input(password_text):
-                    pwd_manager_utils.show_message(
-                        "ERROR", "Invalid characters in the password"
-                    )
+                    pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_invalid_char_password)
                     user_data = False
                 elif password_text != password_confirm_text:
-                    pwd_manager_utils.show_message("ERROR", "Passwords don't match")
+                    pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_passwords_nomatch)
                     user_data = False
             else:
-                pwd_manager_utils.show_message(
-                    "ERROR",
-                    "Password must be at least 8 characters",
-                )
+                pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_password_charnum)
                 user_data = False
 
         if user_data:
@@ -245,14 +235,9 @@ class LoginScreen(MDScreen):
                 )
                 == "user_exists"
             ):
-                pwd_manager_utils.show_message(
-                    "ERROR", "That username is already used. Please chose another one."
-                )
+                pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_username_used)
             else:
-                pwd_manager_utils.show_message(
-                "Banzai!",
-                "You can now log in with the username and password you just registered \o/",
-            )
+                pwd_manager_utils.show_message(Languages().msg_registration_ok_title, Languages().msg_registration_ok_content)
 
         self.username_input_reg.text = ""
         self.password_input_reg.text = ""
@@ -302,22 +287,9 @@ class LoginScreen(MDScreen):
     #             # return PassManagerApp().run()
 
     def app_information(self):
-        pwd_manager_utils.show_message(
-            "ZUPAsswordz Manager",
-            """©munchou 2024, version nfy-241203
-
-Tools of the trade: Python 3.10.2
-Kivy 2.3.0 and Kivy MD 2.0.1 (dev0).
-And love. And time. And tears of blood...
-
-The code is Open Source, feel free to study it, improve the app or reuse part of it.
-github.com/munchou/zupasswordz-manager
-
-Commercial use in any way is NOT allowed.
-
-Special thanks to: Martin (OWDD)
-Snu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec (Kivy Discord)""",
-        )
+        copyright_version = "©munchou 2024, version b24.12c"
+        thanks_to = "Martin (OWDD) [returnz] Snu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec (Kivy Discord)"
+        pwd_manager_utils.show_message(Languages().msg_app_info_title, f"{copyright_version}\n\n{Languages().msg_app_info_content} {thanks_to}")
 
 
 # import pyautogui

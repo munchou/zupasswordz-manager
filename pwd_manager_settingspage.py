@@ -13,8 +13,8 @@ set_lang = pwd_manager_languages.set_lang
 
 class SettingsPage(MDCard):
     # text variables
-    btn_settings_apply = Languages().btn_settings_apply[set_lang]
-    title_text = Languages().settings_title[set_lang]
+    btn_settings_apply = Languages().btn_settings_apply
+    title_text = Languages().settings_title
     current_theme = ObjectProperty(None)
 
     removed = BooleanProperty()
@@ -55,4 +55,4 @@ class SettingsPage(MDCard):
         if theme != current_theme:
             pwd_manager_utils.update_theme(theme)
             self.current_theme = theme
-            pwd_manager_utils.show_message(Languages().msg_theme_changed_title[set_lang], Languages().msg_theme_changed_content[set_lang])
+            pwd_manager_utils.show_message(Languages().msg_theme_changed_title, Languages().msg_theme_changed_content)

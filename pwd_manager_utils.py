@@ -73,6 +73,7 @@ def process_message(message):
 
 
 def show_message(title, message):
+    from pwd_manager_languages import Languages
     message, height = process_message(message)
     backup = False
     close_app = False
@@ -81,12 +82,12 @@ def show_message(title, message):
         title = title.replace("[backup]", "")
         backup = True
     
-    if "[close_app]" in title:
+    elif "[close_app]" in title:
         title = title.replace("[close_app]", "")
         close_app = True
 
     btn_ok = Button(
-        text= "CONFIRM BACK UP" if backup else "YES, PLEASE" if close_app else "OK",
+        text=Languages().btn_confirm_backup if backup else Languages().btn_close_app if close_app else Languages().btn_ok,
         background_color=MDApp.get_running_app().theme_cls.popupButtonBg,
         background_normal="",
         size_hint=(0.4, None) if not backup else (0.6, None),
@@ -95,7 +96,7 @@ def show_message(title, message):
     )
 
     btn_close = Button(
-        text="CANCEL",
+        text=Languages().btn_cancel,
         background_color=MDApp.get_running_app().theme_cls.popupButtonBg,
         background_normal="",
         size_hint=(0.4, None) if not backup else (0.6, None),
@@ -132,7 +133,7 @@ def show_message(title, message):
         update_btns_layout.add_widget(btn_close)
         layout.add_widget(update_btns_layout)
     
-    if close_app:
+    elif close_app:
         update_btns_layout.add_widget(btn_ok)
         update_btns_layout.add_widget(btn_close)
         layout.add_widget(update_btns_layout)
@@ -192,7 +193,7 @@ ja_JP
 
 def check_system_language():
     """Checks the system language so that the language of the app will be set
-    to it, if it exists. Otherwise, it is set to "ENG"."""
+    to it, if it exists in the "languages" folder. Otherwise, it is set to "ENG"."""
     locale.setlocale(locale.LC_ALL, "")
     available_languages = {"en": "ENG", "fr": "FRE", "ja": "JAP", "it": "ITA", "es": "SPA", "de": "GER"}
     user_lang = locale.getlocale(locale.LC_MESSAGES)[0] # or os.environ['LANG'] # ENG -> en_US
@@ -277,18 +278,12 @@ def app_name_exists(app_name, button_text, listscreen):
         user_data = json.load(file)
         apps_names = [decrypt_data(bytes(item[2:-1], "utf-8")) for item in user_data]
         print("apps_names:", apps_names)
-        if app_name in apps_names and button_text != Languages().btn_update_entry[set_lang]:
-            show_message(
-                "ERROR",
-                f"{app_name} has already been added. Please update it by selecting it in your list and then clicking the little pencil.",
-            )
+        if app_name in apps_names and button_text != Languages().btn_update_entry:
+            show_message(Languages().msg_error, f"{app_name} {Languages().msg_appname_exists}")
             return True
-        elif button_text == Languages().btn_update_entry[set_lang]:
+        elif button_text == Languages().btn_update_entry:
             if app_name in apps_names and app_name != listscreen.selected_item:
-                show_message(
-                    "ERROR",
-                    f"{app_name} is already in use, please choose another name.",
-                )
+                show_message(Languages().msg_error, f"{app_name} {Languages().msg_appname_used}")
                 return True
 
         return False
@@ -370,7 +365,10 @@ def update_json(listscreen, id, app_name, app_user, app_pwd, app_info, app_icon)
             if user_data[item][4] == current_item.id:
                 user_data.pop(item)
                 break
-
+        # test1234
+        # if app_pwd == "********":
+        #     app_pwd = decrypt_data(bytes(current_item.app_pwd[2:-1], "utf-8"))
+        # print("UTILS UPDATE_JSON app_pwd:", app_pwd)
         user_data.update(
             {
                 str(encrypt_data(app_name)): [
@@ -517,18 +515,16 @@ def decrypt_data(data):
 
 
 def backup_data_prompt():
-    show_message(
-        "BACK UP DATA?[backup]",
-        """You are about to back your data up.\n\nBeware! The exported data will NOT be encrypted, so anyone who has access to it will have access to your passwords! \nDon't lose it and keep it safe!""",
-    )
+    from pwd_manager_languages import Languages
+    show_message(Languages().msg_backup_title, Languages().msg_backup_content)
 
 
 def backup_data(username):
+    from pwd_manager_languages import Languages
     user_hashed = hasher(username, "")
     filename = f'{username}_backup_{datetime.now().strftime("%Y%m%d_%H%M%S")}.txt'
     save_path = ""
     if kv_platform == "android":
-        from android.permissions import request_permissions, Permission
         from android.storage import primary_external_storage_path
         request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
         save_path = primary_external_storage_path()
@@ -558,16 +554,10 @@ def backup_data(username):
                 )
 
         show_message(
-            "DATA BACKED UP",
-            f"""Your data was successfully backed up!\nYou will find it in the file "{filename}".\n\nAnd remember! The data in that file is NOT encrypted!""",
-        )
-    except PermissionError:
-        print("BACKUP permission error (or something else...)")
-        show_message(
-            "FAILURE - DATA NOT BACKED UP",
-            f"""An error occurred. It is likely that the app does not have the required permission(s) to write the file on your device.""",
-        )
-
+            Languages().msg_backedup_title, f'{Languages().msg_backedup_content_p1} "{filename}".\n\n{Languages().msg_backedup_content_p2}')
+    except Exception as e:
+        print(f"BACKUP permission error (or something else...): {e}")
+        show_message(Languages().msg_backup_fail_title, Languages().msg_backup_fail_content)
 
 
 def check_imported_item(app_user, app_pwd, id):
@@ -743,16 +733,20 @@ class AndroidGetFile:
 
 @mainthread
 def msg_data_imported(apps_added, user_data, apps_not_added):
-    show_message("DATA IMPORTED", f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}")
+    from pwd_manager_languages import Languages
+    show_message(Languages().msg_data_imported_title, f"{apps_added}/{len(user_data[1:])} {Languages().msg_data_imported_content_p1}\n{Languages().msg_data_imported_content_p2} ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}")
 
 @mainthread
 def msg_file_not_found(username):
-    show_message("FILE NOT FOUND", f"""The backup file "{username}_importbackup.txt" was not found.""")
+    from pwd_manager_languages import Languages
+    show_message(Languages().msg_file_notfound_title, f"""{Languages().msg_file_notfound_content_p1} "{username}_importbackup.txt" {Languages().msg_file_notfound_content_p2}""")
 
 @mainthread
 def msg_no_permissions():
-    show_message("ERROR - PERMISSIONS DENIED", "An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device.")
+    from pwd_manager_languages import Languages
+    show_message(Languages().msg_no_permissions_title, Languages().msg_no_permissions_content)
 
 @mainthread
 def msg_unknown_error(e):
-    show_message("UNKNOWN IMPORT ERROR", f"""An error occurred while trying to load the file...\n\n{e}""")
+    from pwd_manager_languages import Languages
+    show_message(Languages().msg_unknown_error_title, f"""{Languages().msg_unknown_error_content}\n\n{e}""")

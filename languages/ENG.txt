@@ -1,0 +1,92 @@
+# NOTES
+# Keep "[update]" and "[close_app]" in their corresponding variables! There are necessary for the corresponding buttons' behavior.
+# In the app info content, add " [returnz] " (spaces included) to return to the next line. It won't appear in the resulting message. 
+
+[ENG]
+# LOGIN SCREEN (some are common with other screens)
+main_title = Welcome
+textfield_username_hint = username
+textfield_password_login_hint = password
+btn_login = LOG IN
+btn_import_data = IMPORT DATA
+btn_export_data = EXPORT DATA
+label_not_registered = Not registered? Create an account
+textfield_textfield_password_register_hint = password (8 characters min.)
+textfield_password_confirm_hint = confirm password
+btn_signin = SIGN IN
+
+msg_close_app_title = Buhbye?[close_app]
+msg_close_app_content = Close the app and get back to your sad routine?
+msg_error = ERROR
+msg_wrong_user_or_pwd = username does not exist or wrong password
+msg_invalid_char_username = Invalid characters in the username
+msg_invalid_char_password = Invalid characters in the password
+msg_passwords_nomatch = Passwords don't match
+msg_password_charnum = Password must be at least 8 characters
+msg_username_used = That username is already used. Please chose another one.
+msg_registration_ok_title = Banzai!
+msg_registration_ok_content = You can now log in with the username and password you just registered \o/
+msg_app_info_title = ZUPAsswordz Manager
+
+msg_app_info_content = Tools of the trade: Python 3.10.2 [returnz] Kivy 2.3.0 and Kivy MD 2.0.1 (dev0). [returnz] And love. And time. And tears of blood... [returnz]  [returnz] The code is Open Source, feel free to study it, improve the app or reuse part of it. [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] Commercial use in any way is NOT allowed. [returnz]  [returnz] Special thanks to:
+
+
+# LIST SCREEN with ADD/UPDATE ENTRY
+searchfield_text = Search...
+entry_title_update = UPDATE AN ENTRY
+entry_title_add = ADD AN ENTRY
+btn_add_entry = ADD ENTRY
+btn_update_entry = UPDATE
+textfield_appname_hint = name of the app/website
+textfield_appuser_hint = username/e-mail
+textfield_apppwd_hint = password (8 characters min.)
+textfield_apppwd_confirm_hint = confirm password
+textfield_appinfo_hint = description (optional)
+
+
+# SETTINGS CARD (from LOGIN SCREEN)
+settings_title = SETTINGS
+btn_settings_apply = CLOSE THE APP
+
+msg_language_changed_title = LANGUAGE CHANGED
+msg_theme_changed_title = THEME CHANGED
+msg_theme_changed_content = Changes will be visible after restarting the app.
+msg_empty_appname = The name of the app cannot be empty
+msg_empty_appusername = The username/e-mail of the app cannot be empty
+msg_invalid_appusername = Invalid characters in the username/e-mail
+
+
+# APP DETAILS
+title_username_email = username / e-mail
+title_password = password
+title_appinfo = information (if any)
+
+
+# UTILS
+btn_confirm_backup = CONFIRM BACKUP
+btn_close_app = YES, PLEASE
+btn_ok = OK
+btn_cancel = CANCEL
+msg_appname_exists = has already been added. Please update it by selecting it in your list and then clicking the little pencil.
+msg_appname_used = is already in use, please choose another name.
+msg_backup_title = BACK UP DATA?[backup]
+msg_backup_content = You are about to back your data up. [returnz]  [returnz] Beware! The exported data will NOT be encrypted, so anyone who has access to it will have access to your passwords! [returnz] Don't lose it and keep it safe!
+msg_backedup_title = DATA BACKED UP
+msg_backedup_content_p1 = Your data was successfully backed up! [returnz] You will find it in the file
+msg_backedup_content_p2 = And remember! The data in that file is NOT encrypted!
+msg_backup_fail_title = FAILURE - DATA NOT BACKED UP
+msg_backup_fail_content = An error occurred. It is likely that the app does not have the required permission(s) to write the file on your device (that's not supposed to happen, you should contact munchou, the maker of that app).
+
+msg_data_imported_title = DATA IMPORTED
+msg_data_imported_content_p1 = entries were imported.
+msg_data_imported_content_p2 = Apps not imported
+
+msg_file_notfound_title = FILE NOT FOUND
+msg_file_notfound_content_p1 = The backup file
+msg_file_notfound_content_p2 = was not found.
+
+msg_no_permissions_title = ERROR - PERMISSIONS DENIED
+msg_no_permissions_content = An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device (that's not supposed to happen, you should contact munchou, the maker of that app).
+
+msg_unknown_error_title = UNKNOWN IMPORT ERROR
+msg_unknown_error_content = An error occurred while trying to load the file...

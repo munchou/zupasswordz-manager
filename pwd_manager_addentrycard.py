@@ -16,7 +16,6 @@ import uuid
 
 import pwd_manager_languages
 from pwd_manager_languages import Languages
-set_lang = pwd_manager_languages.set_lang
 
 
 class ItemBind(MDListItem):
@@ -27,15 +26,16 @@ class ItemBind(MDListItem):
 
 
 class AddEntryCard(MDCard):
-    entry_title_update = Languages().entry_title_update[set_lang]
-    entry_title_add = Languages().entry_title_add[set_lang]
-    textfield_appname_hint = Languages().textfield_appname_hint[set_lang]
-    textfield_appuser_hint = Languages().textfield_appuser_hint[set_lang]
-    textfield_apppwd_hint = Languages().textfield_apppwd_hint[set_lang]
-    textfield_apppwd_confirm_hint = Languages().textfield_apppwd_confirm_hint[set_lang]
-    textfield_appinfo_hint = Languages().textfield_appinfo_hint[set_lang]
+    entry_title_update = Languages().entry_title_update
+    entry_title_add = Languages().entry_title_add
+    textfield_appname_hint = Languages().textfield_appname_hint
+    textfield_appuser_hint = Languages().textfield_appuser_hint
+    textfield_apppwd_hint = Languages().textfield_apppwd_hint
+    textfield_apppwd_confirm_hint = Languages().textfield_apppwd_confirm_hint
+    textfield_appinfo_hint = Languages().textfield_appinfo_hint
     
     removed = BooleanProperty()
+    button_text = Languages().btn_add_entry
 
 
     def __init__(self, button_text, **kwargs):
@@ -62,9 +62,6 @@ class AddEntryCard(MDCard):
     def reset_card(self, **kwargs):
         self.clear_widgets()
 
-    id = ""
-    button_text = Languages().btn_add_entry[set_lang]
-    # title_text = "ADD AN ENTRY"
 
     app_name_input = ObjectProperty(None)
     app_user_input = ObjectProperty(None)
@@ -87,36 +84,26 @@ class AddEntryCard(MDCard):
 
         if app_name_text == "":
             pwd_manager_utils.show_message(
-                "ERROR", "The name of the app cannot be empty"
-            )
+                Languages().msg_error,  Languages().msg_empty_appname)
             error = True
 
         elif app_user_text == "":
-            pwd_manager_utils.show_message(
-                "ERROR", "The username/e-mail of the app cannot be empty"
-            )
+            pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_empty_appusername)
             error = True
 
         elif not pwd_manager_utils.check_input(app_user_text):
-            pwd_manager_utils.show_message(
-                "ERROR", "Invalid characters in the username/e-mail"
-            )
+            pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_invalid_appusername)
             error = True
 
         elif len(app_pwd_text) >= 8:
             if not pwd_manager_utils.check_input(app_pwd_text):
-                pwd_manager_utils.show_message(
-                    "ERROR", "Invalid characters in the password"
-                )
+                pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_invalid_char_password)
                 error = True
             elif app_pwd_text != app_pwd_confirm_text:
-                pwd_manager_utils.show_message("ERROR", "Passwords don't match")
+                pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_passwords_nomatch)
                 error = True
         else:
-            pwd_manager_utils.show_message(
-                "ERROR",
-                "Password must be at least 8 characters",
-            )
+            pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_password_charnum)
             error = True
 
         if not error:
@@ -136,11 +123,13 @@ class AddEntryCard(MDCard):
         app = MDApp.get_running_app()
         listscreen = app.root.current_screen
         master_list = SearchBar().master_list
+        print("CARD unbind key")
+        self.unbind_key()
 
         if pwd_manager_utils.app_name_exists(app_name, self.button_text, listscreen):
             return
 
-        if self.button_text == Languages().btn_update_entry[set_lang]:
+        if self.button_text == Languages().btn_update_entry:
             pwd_manager_utils.update_json(
                 listscreen,
                 id,
@@ -155,7 +144,7 @@ class AddEntryCard(MDCard):
                 master_list.pop(listscreen.selected_item)
             master_list[app_name] = [
                 app_user,
-                app_pwd,
+                str(pwd_manager_utils.encrypt_data(app_pwd)),
                 app_info,
                 app_icon,
                 id,
@@ -167,7 +156,7 @@ class AddEntryCard(MDCard):
             )
             master_list[app_name] = [
                 app_user,
-                app_pwd,
+                str(pwd_manager_utils.encrypt_data(app_pwd)),
                 app_info,
                 app_icon,
                 id,
@@ -176,7 +165,7 @@ class AddEntryCard(MDCard):
 
         entries_list = listscreen.ids.entries_list
 
-        if self.button_text == Languages().btn_update_entry[set_lang]:
+        if self.button_text == Languages().btn_update_entry:
             for child in entries_list.children:
                 if child.app_name == listscreen.selected_item:
                     entry_index = entries_list.children.index(child)
@@ -187,7 +176,7 @@ class AddEntryCard(MDCard):
         listscreen.reset_selected()
 
         pwd_manager_utils.add_entry_list(
-            entries_list, id, app_name, app_user, app_pwd, app_info, app_icon
+            entries_list, id, app_name, app_user, str(pwd_manager_utils.encrypt_data(app_pwd)), app_info, app_icon
         )
 
         entries_list.children = sorted(

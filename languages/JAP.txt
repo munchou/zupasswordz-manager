@@ -1,0 +1,92 @@
+# NOTES
+# Keep "[update]" and "[close_app]" in their corresponding variables! There are necessary for the corresponding buttons' behavior.
+# In the app info content, add " [returnz] " (spaces included) to return to the next line. It won't appear in the resulting message. 
+
+[JAP]
+# LOGIN SCREEN (some are common with other screens)
+main_title = 
+textfield_username_hint = 
+textfield_password_login_hint = 
+btn_login = 
+btn_import_data = 
+btn_export_data = 
+label_not_registered = 
+textfield_textfield_password_register_hint = 
+textfield_password_confirm_hint = 
+btn_signin = 
+
+msg_close_app_title = [close_app]
+msg_close_app_content = 
+msg_error = 
+msg_wrong_user_or_pwd = 
+msg_invalid_char_username = 
+msg_invalid_char_password = 
+msg_passwords_nomatch = 
+msg_password_charnum = 
+msg_username_used = 
+msg_registration_ok_title = 
+msg_registration_ok_content = 
+msg_app_info_title = ZUPAsswordz Manager
+
+msg_app_info_content = 
+
+
+# LIST SCREEN with ADD/UPDATE ENTRY
+searchfield_text = 
+entry_title_update = 
+entry_title_add = 
+btn_add_entry = 
+btn_update_entry = 
+textfield_appname_hint = 
+textfield_appuser_hint = 
+textfield_apppwd_hint = 
+textfield_apppwd_confirm_hint = 
+textfield_appinfo_hint = 
+
+
+# SETTINGS CARD (from LOGIN SCREEN)
+settings_title = 
+btn_settings_apply = 
+
+msg_language_changed_title = 
+msg_theme_changed_title = 
+msg_theme_changed_content = 
+msg_empty_appname = 
+msg_empty_appusername = 
+msg_invalid_appusername = 
+
+
+# APP DETAILS
+title_username_email = 
+title_password = 
+title_appinfo = 
+
+
+# UTILS
+btn_confirm_backup = 
+btn_close_app = 
+btn_ok = 
+btn_cancel = 
+msg_appname_exists = 
+msg_appname_used = 
+msg_backup_title = [backup]
+msg_backup_content = 
+msg_backedup_title = 
+msg_backedup_content_p1 = 
+msg_backedup_content_p2 = 
+msg_backup_fail_title = 
+msg_backup_fail_content = 
+
+msg_data_imported_title = 
+msg_data_imported_content_p1 = 
+msg_data_imported_content_p2 = 
+
+msg_file_notfound_title = 
+msg_file_notfound_content_p1 = 
+msg_file_notfound_content_p2 = 
+
+msg_no_permissions_title = 
+msg_no_permissions_content = 
+
+msg_unknown_error_title = 
+msg_unknown_error_content = 

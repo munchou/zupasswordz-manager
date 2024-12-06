@@ -12,8 +12,11 @@ set_lang = pwd_manager_languages.set_lang
 
 class AppDetailsPage(MDCard):
     # text variables
-    btn_settings_apply = Languages().btn_settings_apply[set_lang]
-    title_text = Languages().settings_title[set_lang]
+    btn_settings_apply = Languages().btn_settings_apply
+    title_text = Languages().settings_title
+    title_username_email = Languages().title_username_email
+    title_password = Languages().title_password
+    title_appinfo = Languages().title_appinfo
 
     selected_item = StringProperty()
     app_user = StringProperty()

@@ -117,6 +117,11 @@ class SearchBar(MDTextField):
     def on_text(self, instance, input_text):
         user_data = self.master_list
         print("\tlist:\n", user_data)
+        ###
+        user_data_pwd = pwd_manager_utils.load_user_json()
+        for item in user_data_pwd:
+            print("ON_TEXT PWD:", user_data_pwd[item][1])
+        ###
 
         app = MDApp.get_running_app()
         listscreen = app.root.current_screen
@@ -164,7 +169,7 @@ class SearchBar(MDTextField):
 
 
 class ListScreen(MDScreen):
-    searchfield_text = Languages().searchfield_text[set_lang]
+    searchfield_text = Languages().searchfield_text
 
     selected_item = StringProperty()
     top_bar_text = StringProperty("")
@@ -199,7 +204,6 @@ class ListScreen(MDScreen):
             for child in self.ids.entries_list.children:
                 if child.app_name == self.selected_item:
                     current_item = child
-                    print("current_item.app_pwd:", current_item.app_pwd)
                     break
             self.ids.bottom_appbar.action_items = [
                 BottomAppBarButton(
@@ -286,7 +290,7 @@ class ListScreen(MDScreen):
             self.bottom_bar_change(False)
 
     def add_card(self):
-        self.new_entry = AddEntryCard(button_text=Languages().btn_add_entry[set_lang], md_bg_color=(1, 1, 1, 0.9))
+        self.new_entry = AddEntryCard(button_text=Languages().btn_add_entry, md_bg_color=(1, 1, 1, 0.9))
         self.add_widget(self.new_entry)
 
     def update_card(self):
@@ -295,7 +299,7 @@ class ListScreen(MDScreen):
                 current_item = child
 
         self.new_entry = AddEntryCard(
-            button_text=Languages().btn_update_entry[set_lang],
+            button_text=Languages().btn_update_entry,
             md_bg_color=(1, 1, 1, 0.9),
         )
         self.new_entry.app_name_update = current_item.app_name
@@ -317,7 +321,9 @@ class ListScreen(MDScreen):
                 break
         self.ids.entries_list.remove_widget(self.ids.entries_list.children[entry_index])
         pwd_manager_utils.remove_entry_json(self.selected_item, current_item)
+        SearchBar().master_list.pop(current_item.app_name)
         self.reset_selected()
+
 
     def logout(self):
         """Logout method - Clears the main list created upon user's logging in.
