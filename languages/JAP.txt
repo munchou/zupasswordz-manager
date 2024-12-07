@@ -4,16 +4,16 @@
 
 [JAP]
 # LOGIN SCREEN (some are common with other screens)
-main_title = 
-textfield_username_hint = 
-textfield_password_login_hint = 
-btn_login = 
-btn_import_data = 
-btn_export_data = 
-label_not_registered = 
-textfield_textfield_password_register_hint = 
-textfield_password_confirm_hint = 
-btn_signin = 
+main_title = ようこそ
+textfield_username_hint = ウーザー名
+textfield_password_login_hint = パスワード
+btn_login = ログイン
+btn_import_data = インポートする
+btn_export_data = エクスポートする
+label_not_registered = アカウントを持っていない？こちらへ！
+textfield_textfield_password_register_hint = パスワード（8文字以上）
+textfield_password_confirm_hint = パスワードを認証する
+btn_signin = サインイン
 
 msg_close_app_title = [close_app]
 msg_close_app_content = 
@@ -45,8 +45,8 @@ textfield_appinfo_hint =
 
 
 # SETTINGS CARD (from LOGIN SCREEN)
-settings_title = 
-btn_settings_apply = 
+settings_title = 設定
+btn_settings_apply = アプリを閉じる
 
 msg_language_changed_title = 
 msg_theme_changed_title = 

@@ -44,6 +44,9 @@ class AddEntryCard(MDCard):
         Window.bind(on_keyboard=self.esc_or_backbutton)
         self.removed = False
 
+    def bind_key(self):
+        print("BIND KEY ADD ENTRY")
+        Window.bind(on_keyboard=self.esc_or_backbutton)
 
     def unbind_key(self):
         Window.bind(on_keyboard=self.esc_or_backbutton)
@@ -51,10 +54,12 @@ class AddEntryCard(MDCard):
 
     def esc_or_backbutton(self, window, key, *largs):
         if key == 27:
+            print("add entry ESC KEY PRESSED / self.removed:", self.removed)
             if not self.removed:
                 MDApp.get_running_app().root.current_screen.reset_selected()
                 self.parent.remove_widget(self)
                 self.removed = True
+                print("after removal:", self.removed)
                 self.unbind_key()
                 return True
             
@@ -86,6 +91,7 @@ class AddEntryCard(MDCard):
             pwd_manager_utils.show_message(
                 Languages().msg_error,  Languages().msg_empty_appname)
             error = True
+            print("self.removed:", self.removed)
 
         elif app_user_text == "":
             pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_empty_appusername)
@@ -106,7 +112,10 @@ class AddEntryCard(MDCard):
             pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_password_charnum)
             error = True
 
-        if not error:
+        if error:
+            self.removed = False
+
+        elif not error:
             self.parent.remove_widget(self)
             self.add_entry(
                 uuid.uuid4().hex,
@@ -116,6 +125,7 @@ class AddEntryCard(MDCard):
                 app_info_text,
                 "app_icon",
             )
+            self.unbind_key()
 
     def add_entry(self, id, app_name, app_user, app_pwd, app_info, app_icon):
         from pwd_manager_listscreen import SearchBar
@@ -123,8 +133,6 @@ class AddEntryCard(MDCard):
         app = MDApp.get_running_app()
         listscreen = app.root.current_screen
         master_list = SearchBar().master_list
-        print("CARD unbind key")
-        self.unbind_key()
 
         if pwd_manager_utils.app_name_exists(app_name, self.button_text, listscreen):
             return
@@ -171,6 +179,7 @@ class AddEntryCard(MDCard):
                     entry_index = entries_list.children.index(child)
                     break
             entries_list.remove_widget(entries_list.children[entry_index])
+
 
         listscreen.bottom_bar_change(False)
         listscreen.reset_selected()

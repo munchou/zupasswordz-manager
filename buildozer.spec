@@ -1,7 +1,7 @@
 [app]
 
 # (str) Title of your application
-title = Kivy Reloader
+title = ZUPAsswordz Manager
 
 # (str) Package name
 package.name = kivy_reloader
@@ -13,13 +13,13 @@ package.domain = org.example
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,toml,ttf
+source.include_exts = py,png,jpg,kv,atlas,toml,ttf,txt
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
 
 # (list) Source files to exclude (let empty to not exclude anything)
-source.exclude_exts = app_copy.zip
+source.exclude_exts = app_copy.zip, requirements.txt
 
 # (list) List of directory to exclude (let empty to not exclude anything)
 #source.exclude_dirs = temp, bin, dist, .venv, __pycache__

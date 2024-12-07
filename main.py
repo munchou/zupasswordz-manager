@@ -112,9 +112,13 @@ class LoginScreen(MDScreen):
     def esc_or_backbutton(self, window, key, *largs):
         print("esc_or_backbutton")
         if key == 27:
-            pwd_manager_utils.show_message(Languages().msg_close_app_title, Languages().msg_close_app_content)
+            # pwd_manager_utils.show_message(Languages().msg_close_app_title, Languages().msg_close_app_content)
+            self.close_app()
             # self.removed = True
             return True
+    
+    def close_app(self):
+        pwd_manager_utils.show_message(Languages().msg_close_app_title, Languages().msg_close_app_content)
 
 
     def on_leave(self, *args):
@@ -176,21 +180,19 @@ class LoginScreen(MDScreen):
             os.environ["pwdzmanuser"] = username_text
             os.environ["pwdzmanpwd"] = password_text
             current_user_env = os.environ["pwdzmanuser"]
-            # print(f"\n\t{current_user_env}'s password:", os.environ["pwdzmanpwd"])
             if export:
                 pwd_manager_utils.backup_data_prompt()
-                # pwd_manager_utils.backup_data(username_text, current_user)
             elif import_backup:
                 if kv_platform == "android":
                     pwd_manager_utils.AndroidGetFile().get_file(username_text)                    
                 else:
                     pwd_manager_utils.AndroidGetFile().load_backup_data(username_text, "")
-            else:
+            else: # ID and pwd OK
                 self.make_master_list()
                 self.unbind_key()
                 self.manager.add_widget(ListScreen(name="listscreen"))
                 self.manager.current = "listscreen"
-            # else:
+            # else: # ID or PWD not OK
             #     pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_wrong_user_or_pwd)
             #     self.username_input.text = ""
             #     self.password_input_login.text = ""
@@ -254,47 +256,10 @@ class LoginScreen(MDScreen):
         self.remove_widget(self.new_entry)
         self.new_entry = None
 
-    # def set_theme(self, theme):
-    #     app = MDApp.get_running_app()
-    #     current_theme = pwd_manager_utils.load_theme()
-    #     if theme != current_theme:
-    #         pwd_manager_utils.update_theme(theme)
-    #         SettingsPage().set_theme = theme
-    #         # from kivymd.uix.button import MDButton
-    #         # print("SettingsPage().ids", SettingsPage().ids)
-    #         # print('SettingsPage().ids["theme_previews"]', SettingsPage().ids.theme_previews)
-    #         # SettingsPage().ids.theme_previews.add_widget(
-    #         #     MDButton(size_hint=(None, None),
-    #         #              style="filled",
-    #         #              radius=0,
-    #         #              background="img/theme_preview_blue-purple.png",
-    #         #              height="148dp",
-    #         #              width="75dp"))
-    #         if kv_platform == "android":
-    #             pass
-    #         else:
-    #             pass
-    #             # try:
-    #             #     app.screenmanager.remove_widget(
-    #             #         app.screenmanager.get_screen("listscreen")
-    #             #     )
-    #             # except:
-    #             #     print("The list screen wasn't removed as it hadn't been created yet.")
-
-    #             # app.screenmanager.clear_widgets()
-    #             # Builder.unload_file("zupasswordz.kv")
-    #             # app.stop()
-    #             # return PassManagerApp().run()
-
     def app_information(self):
-        copyright_version = "©munchou 2024, version b24.12c"
+        copyright_version = "©munchou 2024, version b24.12e"
         thanks_to = "Martin (OWDD) [returnz] Snu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec (Kivy Discord)"
         pwd_manager_utils.show_message(Languages().msg_app_info_title, f"{copyright_version}\n\n{Languages().msg_app_info_content} {thanks_to}")
-
-
-# import pyautogui
-
-# print(pyautogui.size())
 
 
 class PassManagerApp(MDApp):
@@ -302,9 +267,9 @@ class PassManagerApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Builder.load_file("zupasswordz.kv")
-        with open("zupasswordz.kv", "r", encoding="utf-8") as kivy_file:
-            Builder.load_string(kivy_file.read())
+        Builder.load_file("zupasswordz.kv")
+        # with open("zupasswordz.kv", "r", encoding="utf-8") as kivy_file:
+        #     Builder.load_string(kivy_file.read())
 
     def build(self):
         if set_lang == "JAP":
