@@ -41,6 +41,8 @@ if hasattr(sys, "getandroidapilevel"):
 else:
     Window.size = 1080/3, 2115/3
 
+resolution_width = int(Window.size[0])
+
 
 def unload_file():
     from kivy.lang.builder import BuilderBase
@@ -257,9 +259,11 @@ class LoginScreen(MDScreen):
         self.new_entry = None
 
     def app_information(self):
-        copyright_version = "©munchou 2024, version b24.12e"
-        thanks_to = "Martin (OWDD) [returnz] Snu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec (Kivy Discord)"
+        copyright_version = "©munchou 2024, version b24.12f"
+        thanks_to = "Martin (OWDD)\nSnu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec (Kivy Discord)"
         pwd_manager_utils.show_message(Languages().msg_app_info_title, f"{copyright_version}\n\n{Languages().msg_app_info_content} {thanks_to}")
+
+"""Martin (OWDD)\nSnu\nCheaterman\nkuzeyron\nel3phanten\nHamburguesa\nNovfensec (Kivy Discord)"""
 
 
 class PassManagerApp(MDApp):
@@ -324,12 +328,12 @@ class PassManagerApp(MDApp):
             color1 = "086169"
             color2 = "6db9b7"
             color3 = "017c8e"
-        if selected_theme == "bloody":
-            background_color = "7b0000"
+        if selected_theme == "grey":
+            background_color = "5a5a5a"
             white = "FFFFFF"
-            color1 = "7b0000"
-            color2 = "ff5252"
-            color3 = "cf0000"
+            color1 = "7f7f7f"
+            color2 = "dcdcdc"
+            color3 = "aeaeae"
         if selected_theme == "fall":
             background_color = "843c04"
             white = "FFFFFF"

@@ -39,15 +39,6 @@ class SettingsPage(MDCard):
                 self.unbind_key()
                 return True
 
-            # try:
-            #     self.parent.remove_widget(self)
-            #     # self.removed = True
-            #     return True
-            # except Exception as e:
-            #     print("SettingsPage backbutton:", e)
-            
-
-
     
     def set_theme(self, theme):
         app = MDApp.get_running_app()
@@ -56,3 +47,7 @@ class SettingsPage(MDCard):
             pwd_manager_utils.update_theme(theme)
             self.current_theme = theme
             pwd_manager_utils.show_message(Languages().msg_theme_changed_title, Languages().msg_theme_changed_content)
+    
+
+    def lang_not_avail(self):
+        pwd_manager_utils.show_message("ALL UR BASES R BELONG 2 US", "Oh no, it seems that language is in another castle!")

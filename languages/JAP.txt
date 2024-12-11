@@ -28,7 +28,7 @@ msg_registration_ok_title =
 msg_registration_ok_content = 
 msg_app_info_title = ZUPAsswordz Manager
 
-msg_app_info_content = 
+msg_app_info_content = 仕事のツール: Python 3.10.2 [returnz] Kivy 2.3.0 および Kivy MD 2.0.1 (dev0) [returnz] そして愛。そして時間。そして血の涙... [returnz]  [returnz] コードはオープンソースです。自由に研究したり、アプリを改良したり、その一部を再利用したりしてください。 [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] いかなる形態でも商用利用は許可されていません。 [returnz]  [returnz] 特別な感謝:
 
 
 # LIST SCREEN with ADD/UPDATE ENTRY

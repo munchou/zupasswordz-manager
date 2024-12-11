@@ -11,7 +11,7 @@ btn_login = LOG IN
 btn_import_data = IMPORT DATA
 btn_export_data = EXPORT DATA
 label_not_registered = Not registered? Create an account
-textfield_textfield_password_register_hint = password (8 characters min.)
+textfield_textfield_password_register_hint = password (8 char. min.)
 textfield_password_confirm_hint = confirm password
 btn_signin = SIGN IN
 
@@ -39,7 +39,7 @@ btn_add_entry = ADD ENTRY
 btn_update_entry = UPDATE
 textfield_appname_hint = name of the app/website
 textfield_appuser_hint = username/e-mail
-textfield_apppwd_hint = password (8 characters min.)
+textfield_apppwd_hint = password (8 char. min.)
 textfield_apppwd_confirm_hint = confirm password
 textfield_appinfo_hint = description (optional)
 

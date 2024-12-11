@@ -33,8 +33,9 @@ from kivymd.uix.label import MDLabel
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.clock import mainthread
-
+# from kivy.core.window import Window
 from kivy.utils import platform as kv_platform
+
 if kv_platform == "android":
     from android.permissions import Permission, request_permissions
     from androidstorage4kivy import Chooser, SharedStorage
@@ -43,36 +44,134 @@ if kv_platform == "android":
 
 FILENAME = "config.ini"
 
+def word_length(letters, word):
+    # Jap char width: average 16
+    import main
+    word_length = 0
+    for char in word:
+        try:
+            word_length += (letters[char]+1) if main.set_lang == "JAP" else letters[char]
+        except KeyError:
+            print("KEYERROR WITH CHARACTER:", char)
+            word_length += 16 if main.set_lang == "JAP" else 6
+    word_length += letters["space"] if not main.set_lang == "JAP" else 0
+
+    return word_length
+
 
 def process_message(message):
+    letters={"a":9, "A":10, "b":9, "B":8, "c":8, "C":10, "d":9, "D":9, "e":8, "E":8,
+             "f":1, "F":8, "g":9, "G":10, "h":9, "H":10, "i":3, "I":2, "j":5, "J":8,
+             "k":8, "K":9, "l":3, "L":8, "m":13, "M":12, "n":8, "N":10, "o":9, "O":11,
+             "p":8, "P":9, "q":9, "Q":10, "r":5, "R":9, "s":9, "S":9, "t":5, "T":10,
+             "u":8, "U":9, "v":8, "V":10, "w":12, "W":14, "x":9, "X":10, "y":8, "Y":10,
+             "z":9, "Z":9, "space":5, " ":5, "0":9, "1":5, "2":9, "3":8, "4":9,
+             "5":8, "6":8, "7":9, "8":9, "9":8, ",":3, ";":3, ".":2, "!":2, "?":7,
+             "...":10, ":":2, "(":5, ")":5, "[":4, "]":4, "_":8, "^":7, "-":5, "*":7, "/":6,
+             "#":10, '"':4, "'":2, "=":7, "@":14, "<":7, ">":7, "©":10}
+
+    # letters={"a":8, "A":10, "b":8, "B":8, "c":8, "C":10, "d":8, "D":9, "e":8, "E":8,
+    #          "f":6, "F":8, "g":8, "G":10, "h":7, "H":10, "i":2, "I":2, "j":4, "J":8,
+    #          "k":7, "K":9, "l":2, "L":8, "m":12, "M":12, "n":7, "N":10, "o":9, "O":11,
+    #          "p":8, "P":9, "q":8, "Q":10, "r":5, "R":9, "s":8, "S":9, "t":5, "T":10,
+    #          "u":7, "U":9, "v":8, "V":10, "w":12, "W":14, "x":8, "X":10, "y":8, "Y":10,
+    #          "z":8, "Z":9, "space":5, " ":5, "0":9, "1":5, "2":9, "3":8, "4":9,
+    #          "5":8, "6":8, "7":9, "8":9, "9":8, ",":3, ";":3, ".":2, "!":2, "?":7,
+    #          "...":10, ":":2, "(":5, ")":5, "[":4, "]":4, "_":8, "^":7, "-":5, "*":7, "/":6,
+    #          "#":10, '"':4, "'":2, "=":7, "@":14, "<":7, ">":7, "©":10}
+    import main
+    max_length = main.resolution_width - 54
+    print("MAX LENGTH:", max_length)
+    divider = 0.144
     message = message.replace("\n", " [returnz] ")
-    desired_length = 44
+    message_length = sum([word_length(letters, char) for char in message])
+    # message_length = 500
     height = 1
-    if len(message) > desired_length:
-        message = message.split(" ")
-        sentence = ""
-        long_message = ""
-        for u in range(len(message)):
-            word = message[u]
-            word = word.strip()
-            if word == "[returnz]":
-                word = ""
-            else:
-                if len(sentence + word) <= desired_length:
-                    sentence += f"{word} "
-                    if u == len(message):
+    if message_length >= max_length:
+        if main.set_lang == "JAP":
+            sentence = ""
+            sentence_length = 0
+            long_message = ""
+            message = message.split(" [returnz] ")
+            # Original message to compare with the app output:
+            """
+            仕事のツール: Python 3.10.2 
+            Kivy 2.3.0 および Kivy MD 2.0.1 (dev0)
+            そして愛。そして時間。そして血の涙...
+            
+            コードはオープンソースです。自由に研究したり、アプリを改良したり、その一部を再利用したりしてください。
+            github.com/munchou/zupasswordz-manager
+            
+            いかなる形態でも商用利用は許可されていません。
+            
+            特別な感謝:"""
+            for line in message:
+                print("LINE:", line)
+            for line in message:
+                line_length = sum([word_length(letters, char) for char in line])
+                if line_length < max_length:
+                    long_message += f"{line}\n"
+                    height += 1
+                else:
+                    for u in range(len(line)):
+                        if u == 0:
+                            print("NEW LINE:", line)
+                            sentence = ""
+                        char = line[u]
+                        if sentence_length + word_length(letters, char) < max_length:
+                            sentence += char
+                            sentence_length += word_length(letters, char)
+                            if u+1 == len(line):
+                                print("BREAK", line[u])
+                                long_message += f"{sentence}\n" if message.index(line) != len(message)-1 else sentence
+                                sentence_length = 0
+                                height += 1
+                                break
+                            continue
+                        
+                        long_message += f"{sentence}\n"
+                        sentence = char
+                        sentence_length = word_length(letters, char)
                         height += 1
-                        break
-                    continue
-            long_message += f"{sentence.strip()}\n"
-            height += 1
-            sentence = f"{word} "
-        long_message += f"{sentence.strip()}"
-        message = long_message
+
+            message = long_message
+            print("\n\tmessage:\n", f"_{message}_")
+                    
+
+        else:
+            message = message.split(" ")
+            sentence = ""
+            sentence_length = 0
+            long_message = ""
+            for u in range(len(message)):
+                word = message[u]
+                word = word.strip()
+                if word == "[returnz]":
+                    word = ""
+                else:
+                    if sentence_length + word_length(letters, word) < max_length:
+                        sentence_length += word_length(letters, word)
+                        sentence += f"{word} "
+                        print(sentence, sentence_length)
+                        if u == len(message):
+                            height += 1
+                            sentence_length = 0
+                            break
+                        continue
+                sentence_length = 0
+                long_message += f"{sentence.strip()}\n"
+                height += 1
+                sentence = f"{word} "
+                sentence_length += word_length(letters, word)
+            long_message += f"{sentence.strip()}"
+            message = long_message
+    
     return message, height
 
 
 def show_message(title, message):
+    import main
+    resolution_width = main.resolution_width
     from pwd_manager_languages import Languages
     message, height = process_message(message)
     backup = False
@@ -88,6 +187,7 @@ def show_message(title, message):
 
     btn_ok = Button(
         text=Languages().btn_confirm_backup if backup else Languages().btn_close_app if close_app else Languages().btn_ok,
+        # color=MDApp.get_running_app().theme_cls.backgroundColor,
         background_color=MDApp.get_running_app().theme_cls.popupButtonBg,
         background_normal="",
         size_hint=(0.4, None) if not backup else (0.6, None),
@@ -97,6 +197,7 @@ def show_message(title, message):
 
     btn_close = Button(
         text=Languages().btn_cancel,
+        # color=MDApp.get_running_app().theme_cls.backgroundColor,
         background_color=MDApp.get_running_app().theme_cls.popupButtonBg,
         background_normal="",
         size_hint=(0.4, None) if not backup else (0.6, None),
@@ -108,14 +209,15 @@ def show_message(title, message):
     layout = MDBoxLayout(
         MDLabel(
             text=message,
-            text_color="FFFFFF",
+            text_color= "FFFFFF",
             adaptive_size=True,
             padding=("5dp", 0, 0, 0),
             # pos=("12dp", "12dp"),
         ),
         orientation="vertical",
         theme_bg_color="Custom",
-        md_bg_color=(0, 0, 0, 0),
+        md_bg_color= (0, 0, 0, 0),
+        padding=(0, "10dp", 0, 0),
         radius=0,
         spacing="10dp",
     )
@@ -141,15 +243,26 @@ def show_message(title, message):
     else:
         layout.add_widget(btn_ok)
 
+    print("Screen resolution_width:", resolution_width, "POPUP:", resolution_width-20)
+    print("number of lines:", height)
+          
+    import pwd_manager_languages
+    if pwd_manager_languages.set_lang == "JAP":
+        fonts_height = 28
+        title_height = 131
+    else:
+        fonts_height = 17+6
+        title_height = 126
     popup = Popup(
         title=title,
         title_size="20sp",
         content=layout,
         background="",
         background_color=MDApp.get_running_app().theme_cls.popupBg,
+        # background_color="#5a5a5a" if load_theme() == "creamy" else MDApp.get_running_app().theme_cls.popupBg,
         overlay_color=MDApp.get_running_app().theme_cls.popupBgOverlay,
         size_hint=(None, None),
-        size=("350dp", f"{(120) + 23*height}dp"),
+        size=(f"{resolution_width - 20}dp", f"{title_height + fonts_height*(height)}dp"),
     )
 
     popup.open()
@@ -268,11 +381,7 @@ def add_user(
         parser.write(configfile)
 
 
-def app_name_exists(app_name, button_text, listscreen):
-    import pwd_manager_languages
-    from pwd_manager_languages import Languages
-    set_lang = pwd_manager_languages.set_lang
-    
+def app_name_exists(app_name, button_text, listscreen):    
     username = hasher(os.environ.get("pwdzmanuser"), "")
     with open(f"{username}.json", "r") as file:
         user_data = json.load(file)

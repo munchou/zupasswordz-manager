@@ -1,7 +1,7 @@
 [app]
 
 # (str) Title of your application
-title = ZUPAsswordz Manager
+title = ZUPAsswordz
 
 # (str) Package name
 package.name = kivy_reloader
@@ -30,7 +30,7 @@ source.exclude_exts = app_copy.zip, requirements.txt
 source.exclude_patterns = app_copy.zip, compile_app.py, buildozer.spec, poetry.lock, pyproject.toml, send_app_to_phone.py, .vscode, tests, _saved-files
 
 # (str) Application versioning (method 1)
-version = 0.1
+version = 0.8
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -49,10 +49,10 @@ requirements = python3, kivy==2.3.0, kivy_reloader, https://github.com/kivymd/Ki
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-#presplash.filename = %(source.dir)s/data/presplash.png
+presplash.filename = %(source.dir)s/img/zupasswordz_logo_presplash.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
+#icon.filename = %(source.dir)s/img/tWQCzMfu_logo_256.png
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
@@ -65,7 +65,7 @@ orientation = portrait
 #
 
 #
-# author = © Copyright Info
+author = ©munchou 2024
 
 # change the major version of python used by the app
 osx.python_version = 3
@@ -94,8 +94,8 @@ fullscreen = 0
 #android.presplash_lottie = "path/to/lottie/file.json"
 
 # (str) Adaptive icon of the application (used if Android API level is 26+ at runtime)
-#icon.adaptive_foreground.filename = %(source.dir)s/data/icon_fg.png
-#icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
+icon.adaptive_foreground.filename = %(source.dir)s/img/zupasswordz_logo_fg.png
+icon.adaptive_background.filename = %(source.dir)s/img/zupasswordz_logo_bg.png
 
 # (list) Permissions
 #android.permissions = (name=android.permission.READ_EXTERNAL_STORAGE;maxSdkVersion=28), (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=28)
