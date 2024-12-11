@@ -33,6 +33,7 @@ from kivymd.uix.label import MDLabel
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.clock import mainthread
+from kivy.metrics import dp
 # from kivy.core.window import Window
 from kivy.utils import platform as kv_platform
 
@@ -56,7 +57,7 @@ def word_length(letters, word):
             word_length += 16 if main.set_lang == "JAP" else 6
     word_length += letters["space"] if not main.set_lang == "JAP" else 0
 
-    return word_length
+    return dp(word_length) #int(word_length * int(main.resolution_width/160)) if kv_platform == "android" else word_length
 
 
 def process_message(message):
@@ -105,8 +106,8 @@ def process_message(message):
             いかなる形態でも商用利用は許可されていません。
             
             特別な感謝:"""
-            for line in message:
-                print("LINE:", line)
+            # for line in message:
+                # print("LINE:", line)
             for line in message:
                 line_length = sum([word_length(letters, char) for char in line])
                 if line_length < max_length:
@@ -115,14 +116,14 @@ def process_message(message):
                 else:
                     for u in range(len(line)):
                         if u == 0:
-                            print("NEW LINE:", line)
+                            # print("NEW LINE:", line)
                             sentence = ""
                         char = line[u]
                         if sentence_length + word_length(letters, char) < max_length:
                             sentence += char
                             sentence_length += word_length(letters, char)
                             if u+1 == len(line):
-                                print("BREAK", line[u])
+                                # print("BREAK", line[u])
                                 long_message += f"{sentence}\n" if message.index(line) != len(message)-1 else sentence
                                 sentence_length = 0
                                 height += 1
@@ -135,7 +136,7 @@ def process_message(message):
                         height += 1
 
             message = long_message
-            print("\n\tmessage:\n", f"_{message}_")
+            # print("\n\tmessage:\n", f"_{message}_")
                     
 
         else:
@@ -152,7 +153,7 @@ def process_message(message):
                     if sentence_length + word_length(letters, word) < max_length:
                         sentence_length += word_length(letters, word)
                         sentence += f"{word} "
-                        print(sentence, sentence_length)
+                        # print(sentence, sentence_length)
                         if u == len(message):
                             height += 1
                             sentence_length = 0
@@ -262,7 +263,8 @@ def show_message(title, message):
         # background_color="#5a5a5a" if load_theme() == "creamy" else MDApp.get_running_app().theme_cls.popupBg,
         overlay_color=MDApp.get_running_app().theme_cls.popupBgOverlay,
         size_hint=(None, None),
-        size=(f"{resolution_width - 20}dp", f"{title_height + fonts_height*(height)}dp"),
+        size=(resolution_width - dp(20), dp(title_height + fonts_height*(height))),
+        # size=(f"{(resolution_width - 20)}dp", f"{title_height + fonts_height*(height)}dp"),
     )
 
     popup.open()

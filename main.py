@@ -35,7 +35,7 @@ Window.softinput_mode = "below_target"
 
 resource_add_path("fonts/")
 
-if hasattr(sys, "getandroidapilevel"):
+if kv_platform == "android":
     Window.fullscreen = True
     # Window.maximize()
 else:
@@ -260,7 +260,7 @@ class LoginScreen(MDScreen):
 
     def app_information(self):
         copyright_version = "©munchou 2024, version b24.12f"
-        thanks_to = "Martin (OWDD)\nSnu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec (Kivy Discord)"
+        thanks_to = "Martin (OWDD)\nSnu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec, devilsof (Kivy Discord)"
         pwd_manager_utils.show_message(Languages().msg_app_info_title, f"{copyright_version}\n\n{Languages().msg_app_info_content} {thanks_to}")
 
 """Martin (OWDD)\nSnu\nCheaterman\nkuzeyron\nel3phanten\nHamburguesa\nNovfensec (Kivy Discord)"""
@@ -276,6 +276,7 @@ class PassManagerApp(MDApp):
         #     Builder.load_string(kivy_file.read())
 
     def build(self):
+        print("APP RESOLUTION:", Window.size)
         if set_lang == "JAP":
             from kivy.core.text import LabelBase, DEFAULT_FONT
             LabelBase.register(DEFAULT_FONT, "Meiryo.ttf")
