@@ -6,6 +6,7 @@ bin
 _env
 z_*
 _saved-files
+keystores
 
 
 *.json
@@ -15,4 +16,5 @@ _saved-files
 *.lock
 
 config.ini
+pwd_manager_api.py
 pwd_manager_utils _test.py

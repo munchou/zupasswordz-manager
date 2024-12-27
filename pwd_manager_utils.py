@@ -53,7 +53,7 @@ def word_length(letters, word):
         try:
             word_length += (letters[char]+1) if main.set_lang == "JAP" else letters[char]
         except KeyError:
-            print("KEYERROR WITH CHARACTER:", char)
+            # print("KEYERROR WITH CHARACTER:", char)
             word_length += 16 if main.set_lang == "JAP" else 6
     word_length += letters["space"] if not main.set_lang == "JAP" else 0
 
@@ -81,11 +81,11 @@ def process_message(message):
     #          "...":10, ":":2, "(":5, ")":5, "[":4, "]":4, "_":8, "^":7, "-":5, "*":7, "/":6,
     #          "#":10, '"':4, "'":2, "=":7, "@":14, "<":7, ">":7, "©":10}
     import main
-    max_length = main.resolution_width - 54
-    print("MAX LENGTH:", max_length)
+    max_length = int(main.resolution_width - dp(54))
+    # print("MAX LENGTH:", max_length)
     divider = 0.144
     message = message.replace("\n", " [returnz] ")
-    message_length = sum([word_length(letters, char) for char in message])
+    message_length = dp(sum([word_length(letters, char) for char in message]))
     # message_length = 500
     height = 1
     if message_length >= max_length:
@@ -147,7 +147,11 @@ def process_message(message):
             for u in range(len(message)):
                 word = message[u]
                 word = word.strip()
-                if word == "[returnz]":
+                if word.startswith("git") and sum([letters[char] for char in word]) > max_length:
+                    sentence += f"{word[:-8]}\n"
+                    word = word[-8:]
+                    height += 1
+                elif word == "[returnz]":
                     word = ""
                 else:
                     if sentence_length + word_length(letters, word) < max_length:
@@ -245,15 +249,17 @@ def show_message(title, message):
         layout.add_widget(btn_ok)
 
     print("Screen resolution_width:", resolution_width, "POPUP:", resolution_width-20)
-    print("number of lines:", height)
+    # print("number of lines:", height)
           
     import pwd_manager_languages
     if pwd_manager_languages.set_lang == "JAP":
         fonts_height = 28
         title_height = 131
     else:
-        fonts_height = 17+6
-        title_height = 126
+        fonts_height = 28
+        title_height = 131
+        # fonts_height = 17+6
+        # title_height = 126
     popup = Popup(
         title=title,
         title_size="20sp",
@@ -263,8 +269,8 @@ def show_message(title, message):
         # background_color="#5a5a5a" if load_theme() == "creamy" else MDApp.get_running_app().theme_cls.popupBg,
         overlay_color=MDApp.get_running_app().theme_cls.popupBgOverlay,
         size_hint=(None, None),
-        size=(resolution_width - dp(20), dp(title_height + fonts_height*(height))),
-        # size=(f"{(resolution_width - 20)}dp", f"{title_height + fonts_height*(height)}dp"),
+        # size=(resolution_width - dp(20), dp(title_height) + dp(fonts_height)*height),
+        size=(resolution_width - dp(20), dp(title_height + fonts_height*height)),
     )
 
     popup.open()
@@ -290,6 +296,17 @@ def hasher(word, salt):
 def generate_salt():
     return bcrypt.gensalt()
 
+
+def check_if_emoji(word):
+    new_word = ""
+    for char in word:
+        # if "1F600" <= f"{ord(char):X}" <= "1F64F": # :X is for hexa
+        if f"{ord(char):X}".startswith("1F"):
+            print(f"{ord(char):X} is an emoji")
+            # new_word += f'[font=emojiz]{char}[/font]'
+        else:
+            new_word += char
+    return new_word
 
 def check_input(word):
     if " " not in word or word == "":
@@ -383,7 +400,8 @@ def add_user(
         parser.write(configfile)
 
 
-def app_name_exists(app_name, button_text, listscreen):    
+def app_name_exists(app_name, button_text, listscreen):
+    from pwd_manager_languages import Languages
     username = hasher(os.environ.get("pwdzmanuser"), "")
     with open(f"{username}.json", "r") as file:
         user_data = json.load(file)

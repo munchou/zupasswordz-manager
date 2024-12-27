@@ -15,78 +15,83 @@ textfield_textfield_password_register_hint = パスワード（8文字以上）
 textfield_password_confirm_hint = パスワードを認証する
 btn_signin = サインイン
 
-msg_close_app_title = [close_app]
-msg_close_app_content = 
-msg_error = 
-msg_wrong_user_or_pwd = 
-msg_invalid_char_username = 
-msg_invalid_char_password = 
-msg_passwords_nomatch = 
-msg_password_charnum = 
-msg_username_used = 
-msg_registration_ok_title = 
-msg_registration_ok_content = 
-msg_app_info_title = ZUPAsswordz Manager
+msg_close_app_title = バイバァァァイ[close_app]
+msg_close_app_content = アプリを閉じますか？
+msg_error = エラー
+msg_wrong_user_or_pwd = ユーザー名が存在しないか、パスワードが間違っています
+msg_invalid_char_username = ユーザー名に無効な文字が含まれています
+msg_invalid_char_password = パスワードに無効な文字が含まれています
+msg_passwords_nomatch = パスワードが一致しません
+msg_password_charnum = パスワードは8文字以上でなければなりません
+msg_username_used = そのユーザー名は既に使用されています。別のユーザー名を選択してください。
+msg_registration_ok_title = バンザイ！
+msg_registration_ok_content = 登録したユーザー名とパスワードでログインできます \o/
 
 msg_app_info_content = 仕事のツール: Python 3.10.2 [returnz] Kivy 2.3.0 および Kivy MD 2.0.1 (dev0) [returnz] そして愛。そして時間。そして血の涙... [returnz]  [returnz] コードはオープンソースです。自由に研究したり、アプリを改良したり、その一部を再利用したりしてください。 [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] いかなる形態でも商用利用は許可されていません。 [returnz]  [returnz] 特別な感謝:
 
 
 # LIST SCREEN with ADD/UPDATE ENTRY
-searchfield_text = 
-entry_title_update = 
-entry_title_add = 
-btn_add_entry = 
-btn_update_entry = 
-textfield_appname_hint = 
-textfield_appuser_hint = 
-textfield_apppwd_hint = 
-textfield_apppwd_confirm_hint = 
-textfield_appinfo_hint = 
+searchfield_text = 検索。。。
+entry_title_update = エントリを更新する
+entry_title_add = エントリを追加する
+btn_add_entry = 追加する
+btn_update_entry = 更新する
+textfield_appname_hint = アプリケーションの名前
+textfield_appuser_hint = ユーザー名 / メールアドレス
+textfield_apppwd_hint = パスワード
+textfield_apppwd_confirm_hint = パスワードを認証する
+textfield_appinfo_hint = 説明 (オプションです)
 
 
 # SETTINGS CARD (from LOGIN SCREEN)
 settings_title = 設定
 btn_settings_apply = アプリを閉じる
 
-msg_language_changed_title = 
-msg_theme_changed_title = 
-msg_theme_changed_content = 
-msg_empty_appname = 
-msg_empty_appusername = 
-msg_invalid_appusername = 
+msg_language_changed_title = 言語が変更されました
+msg_theme_changed_title = テーマが変更されました
+msg_theme_changed_content = アプリを再起動すると変更が表示されます。
+msg_empty_appname = アプリの名前は空欄にできません
+msg_empty_appusername = アプリのユーザー名/メールアドレスは空欄にできません
+msg_invalid_appusername = ユーザー名/メールアドレスに無効な文字が含まれています
 
 
 # APP DETAILS
-title_username_email = 
-title_password = 
-title_appinfo = 
+title_username_email = ユーザー名 / メールアドレス
+title_password = パスワード
+title_appinfo = アプリの説明
 
 
 # UTILS
-btn_confirm_backup = 
-btn_close_app = 
-btn_ok = 
-btn_cancel = 
-msg_appname_exists = 
-msg_appname_used = 
-msg_backup_title = [backup]
-msg_backup_content = 
-msg_backedup_title = 
-msg_backedup_content_p1 = 
-msg_backedup_content_p2 = 
-msg_backup_fail_title = 
-msg_backup_fail_content = 
+btn_confirm_backup = バックアップの確認
+btn_close_app = おねがぁぁぁい！
+btn_ok = OK
+btn_cancel = キャンセル
+msg_appname_exists = はすでに追加されています。リストで選択して小さな鉛筆をクリックして更新してください。
+msg_appname_used = はすでに使用されています。別の名前を選択してください。
+msg_backup_title = データをバックアップしますか?[backup]
+msg_backup_content = データをバックアップしようとしています。 [returnz]  [returnz] 注意してください! エクスポートされたデータは暗号化されないので、アクセスできる人は誰でもあなたのパスワードにアクセスできます! [returnz] 紛失しないように、安全に保管してください!
+msg_backedup_title = バックアップされました
+msg_backedup_content_p1 = データのバックアップに成功しました! [returnz] 次のファイルで確認できます:
+msg_backedup_content_p2 = 覚えておいてください! そのファイル内のデータは暗号化されていません!
+msg_backup_fail_title = 失敗 - データがバックアップされていません
+msg_backup_fail_content = エラーが発生しました。アプリにデバイスにファイルを書き込むために必要な権限がない可能性があります (これは発生しないはずなので、アプリのメーカーである munchou に問い合わせてください)。
 
-msg_data_imported_title = 
-msg_data_imported_content_p1 = 
-msg_data_imported_content_p2 = 
+msg_data_imported_title = データがインポートされました
+msg_data_imported_content_p1 = 件のエントリがインポートされました。
+msg_data_imported_content_p2 = インポートされなかったアプリ
 
-msg_file_notfound_title = 
-msg_file_notfound_content_p1 = 
-msg_file_notfound_content_p2 = 
+msg_file_notfound_title = ファイルが見つかりません
+msg_file_notfound_content_p1 = バックアップ ファイル
+msg_file_notfound_content_p2 = が見つかりませんでした。
 
-msg_no_permissions_title = 
-msg_no_permissions_content = 
+msg_no_permissions_title = エラー - 権限が拒否されました
+msg_no_permissions_content = エラーが発生しました。デバイスからファイルを読み込むために必要な権限がアプリにない可能性があります (これは発生しないはずなので、アプリのメーカーである munchou に問い合わせてください)。
 
-msg_unknown_error_title = 
-msg_unknown_error_content = 
+msg_unknown_error_title = 不明なインポート エラー
+msg_unknown_error_content = ファイルの読み込み中にエラーが発生しました。。。
+
+
+
+
+
+

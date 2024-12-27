@@ -23,10 +23,9 @@ msg_invalid_char_username = Invalid characters in the username
 msg_invalid_char_password = Invalid characters in the password
 msg_passwords_nomatch = Passwords don't match
 msg_password_charnum = Password must be at least 8 characters
-msg_username_used = That username is already used. Please chose another one.
+msg_username_used = That username is already used. Please choose another one.
 msg_registration_ok_title = Banzai!
 msg_registration_ok_content = You can now log in with the username and password you just registered \o/
-msg_app_info_title = ZUPAsswordz Manager
 
 msg_app_info_content = Tools of the trade: Python 3.10.2 [returnz] Kivy 2.3.0 and Kivy MD 2.0.1 (dev0). [returnz] And love. And time. And tears of blood... [returnz]  [returnz] The code is Open Source, feel free to study it, improve the app or reuse part of it. [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] Commercial use in any way is NOT allowed. [returnz]  [returnz] Special thanks to:
 

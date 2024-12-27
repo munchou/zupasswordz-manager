@@ -259,9 +259,10 @@ class LoginScreen(MDScreen):
         self.new_entry = None
 
     def app_information(self):
-        copyright_version = "©munchou 2024, version b24.12f"
+        app_title = "ZUPAsswordz"
+        copyright_version = "©munchou 2024, version b24.12g" # g -> 2024 Dec. 15
         thanks_to = "Martin (OWDD)\nSnu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec, devilsof (Kivy Discord)"
-        pwd_manager_utils.show_message(Languages().msg_app_info_title, f"{copyright_version}\n\n{Languages().msg_app_info_content} {thanks_to}")
+        pwd_manager_utils.show_message(app_title, f"{copyright_version}\n\n{Languages().msg_app_info_content} {thanks_to}")
 
 """Martin (OWDD)\nSnu\nCheaterman\nkuzeyron\nel3phanten\nHamburguesa\nNovfensec (Kivy Discord)"""
 
@@ -276,13 +277,9 @@ class PassManagerApp(MDApp):
         #     Builder.load_string(kivy_file.read())
 
     def build(self):
+        from kivy.core.text import LabelBase, DEFAULT_FONT
+        LabelBase.register(DEFAULT_FONT, "NotoSansJP-Regular.ttf")
         print("APP RESOLUTION:", Window.size)
-        if set_lang == "JAP":
-            from kivy.core.text import LabelBase, DEFAULT_FONT
-            LabelBase.register(DEFAULT_FONT, "Meiryo.ttf")
-            # LabelBase.register(name="meiryo", fn_regular="Meiryo.ttf")
-            print("/n/tMEIRYO FONT PATH:", DEFAULT_FONT)
-            print("Font meiryo registered")
 
         # pwd_manager_utils.initialize_config_file()
         # I am using 3 main colors + regular ones (like )background and white):

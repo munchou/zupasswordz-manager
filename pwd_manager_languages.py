@@ -85,7 +85,7 @@ class Languages:
     msg_username_used = load_lang_file(set_lang, "msg_username_used")
     msg_registration_ok_title = load_lang_file(set_lang, "msg_registration_ok_title")
     msg_registration_ok_content = load_lang_file(set_lang, "msg_registration_ok_content")
-    msg_app_info_title = load_lang_file(set_lang, "msg_app_info_title")
+    # msg_app_info_title = load_lang_file(set_lang, "msg_app_info_title")
 
     msg_app_info_content = load_lang_file(set_lang, "msg_app_info_content")
 

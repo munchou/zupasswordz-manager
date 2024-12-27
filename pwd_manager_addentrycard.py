@@ -87,6 +87,7 @@ class AddEntryCard(MDCard):
         app_pwd_confirm_text = self.app_pwd_confirm.text
         app_info_text = self.app_info.text
 
+        app_name_text = pwd_manager_utils.check_if_emoji(app_name_text)
         if app_name_text == "":
             pwd_manager_utils.show_message(
                 Languages().msg_error,  Languages().msg_empty_appname)

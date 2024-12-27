@@ -11,7 +11,7 @@ btn_login = SE CONNECTER
 btn_import_data = IMPORT. DONNEES
 btn_export_data = EXPORT. DONNEES
 label_not_registered = Pas de compte? Crééz-en un
-textfield_textfield_password_register_hint = mot de passe (8 caractères min.)
+textfield_textfield_password_register_hint = mot de passe (8 car. min.)
 textfield_password_confirm_hint = confirmer le mot de passe
 btn_signin = CREER LE COMPTE
 
@@ -26,7 +26,6 @@ msg_password_charnum = Le mot de passe doit faire au moins 8 caractères
 msg_username_used = Ce nom d'utilisateur est déjà utilisé. Merci d'en choisir un autre.
 msg_registration_ok_title = Banzai!
 msg_registration_ok_content = Vous pouvez vous connecter avec le nom d'utilisateur et le mot de passe que vous venez d'enregistrer \o/
-msg_app_info_title = ZUPAsswordz Manager
 
 msg_app_info_content = Outils du labeur : Python 3.10.2 [returnz] Kivy 2.3.0 et Kivy MD 2.0.1 (dev0). [returnz] Et de l'amour. Et du temps. Et des larmes de sang... [returnz]  [returnz] Le code est Open Source, n'hésitez pas l'étudier, l'améliorer ou même réutiliser des morceaux. [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] Utilisation commerciale de quelque manière NON autorisée. [returnz]  [returnz] Remerciements spéciaux à :
 
@@ -39,7 +38,7 @@ btn_add_entry = AJOUTER
 btn_update_entry = MODIFIER
 textfield_appname_hint = nom de l'app/du site
 textfield_appuser_hint = nom d'utilisateur/e-mail
-textfield_apppwd_hint = mot de passe (8 caractères min.)
+textfield_apppwd_hint = mot de passe (8 car. min.)
 textfield_apppwd_confirm_hint = confirmer le mot de passe
 textfield_appinfo_hint = description (optionelle)
 
@@ -50,7 +49,7 @@ btn_settings_apply = FERMER L'APPLICATION
 
 msg_language_changed_title = LANGUE CHANGEE
 msg_theme_changed_title = THEME CHANGE
-msg_theme_changed_content = Les changement seront visibles au redémarrage de l'application:
+msg_theme_changed_content = Les changement seront visibles au redémarrage de l'application.
 msg_empty_appname = Le nom de l'app ne peut pas être rien
 msg_empty_appusername = L'utilisateur/e-mail de l'app ne peut pas être rien
 msg_invalid_appusername = Caractères non valides dans l'utilisateur/e-mail
