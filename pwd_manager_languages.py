@@ -64,8 +64,7 @@ class Languages:
     textfield_password_login_hint = load_lang_file(set_lang, "textfield_password_login_hint")
     
     btn_login = load_lang_file(set_lang, "btn_login")
-    btn_import_data = load_lang_file(set_lang, "btn_import_data")
-    btn_export_data = load_lang_file(set_lang, "btn_export_data")
+    # btn_export_data = load_lang_file(set_lang, "btn_export_data")
     
     label_not_registered = load_lang_file(set_lang, "label_not_registered")
     
@@ -87,8 +86,6 @@ class Languages:
     msg_registration_ok_content = load_lang_file(set_lang, "msg_registration_ok_content")
     # msg_app_info_title = load_lang_file(set_lang, "msg_app_info_title")
 
-    msg_app_info_content = load_lang_file(set_lang, "msg_app_info_content")
-
     
         # LIST SCREEN with ADD/UPDATE ENTRY
     searchfield_text = load_lang_file(set_lang, "searchfield_text")
@@ -104,6 +101,52 @@ class Languages:
     textfield_apppwd_hint = load_lang_file(set_lang, "textfield_apppwd_hint")
     textfield_apppwd_confirm_hint = load_lang_file(set_lang, "textfield_apppwd_confirm_hint")
     textfield_appinfo_hint = load_lang_file(set_lang, "textfield_appinfo_hint")
+
+
+        # INFORMATION PAGE
+    info_page_title = load_lang_file(set_lang, "info_page_title")
+    msg_app_info_content1 = load_lang_file(set_lang, "msg_app_info_content1")
+    msg_app_info_content2 = load_lang_file(set_lang, "msg_app_info_content2")
+
+
+        # IMPORT BACKUP
+    btn_import_data = load_lang_file(set_lang, "btn_import_data")
+
+    msg_import_backup_title = load_lang_file(set_lang, "msg_import_backup_title")
+    msg_import_backup_msg = load_lang_file(set_lang, "msg_import_backup_msg")
+
+    msg_data_imported_title = load_lang_file(set_lang, "msg_data_imported_title")
+    msg_data_imported_content_p1 = load_lang_file(set_lang, "msg_data_imported_content_p1")
+    msg_data_imported_content_p2 = load_lang_file(set_lang, "msg_data_imported_content_p2")
+
+    msg_file_notfound_title = load_lang_file(set_lang, "msg_file_notfound_title")
+    msg_file_notfound_content_p1 = load_lang_file(set_lang, "msg_file_notfound_content_p1")
+    msg_file_notfound_content_p2 = load_lang_file(set_lang, "msg_file_notfound_content_p2")
+
+    msg_no_permissions_title = load_lang_file(set_lang, "msg_no_permissions_title")
+    msg_no_permissions_content = load_lang_file(set_lang, "msg_no_permissions_content")
+
+    msg_unknown_error_title = load_lang_file(set_lang, "msg_unknown_error_title")
+    msg_unknown_error_content = load_lang_file(set_lang, "msg_unknown_error_content")
+
+    msg_data_import_wrongpwd_title = load_lang_file(set_lang, "msg_data_import_wrongpwd_title")
+    msg_data_import_wrongpwd_content = load_lang_file(set_lang, "msg_data_import_wrongpwd_content")
+
+    textfield_import_data_pwd = load_lang_file(set_lang, "textfield_import_data_pwd")
+
+
+        # BACKUP PAGE
+    backup_title = load_lang_file(set_lang, "backup_title")
+    backup_info = load_lang_file(set_lang, "backup_info")
+    btn_backup = load_lang_file(set_lang, "btn_backup")
+
+    # msg_backup_title = load_lang_file(set_lang, "msg_backup_title")
+    # msg_backup_content = load_lang_file(set_lang, "msg_backup_content")
+    msg_backedup_title = load_lang_file(set_lang, "msg_backedup_title")
+    msg_backedup_content_p1 = load_lang_file(set_lang, "msg_backedup_content_p1")
+    msg_backedup_content_p2 = load_lang_file(set_lang, "msg_backedup_content_p2")
+    msg_backup_fail_title = load_lang_file(set_lang, "msg_backup_fail_title")
+    msg_backup_fail_content = load_lang_file(set_lang, "msg_backup_fail_content")
 
 
         # SETTINGS CARD (from LOGIN SCREEN)
@@ -130,26 +173,6 @@ class Languages:
     btn_cancel = load_lang_file(set_lang, "btn_cancel")
     msg_appname_exists = load_lang_file(set_lang, "msg_appname_exists")
     msg_appname_used = load_lang_file(set_lang, "msg_appname_used")
-    msg_backup_title = load_lang_file(set_lang, "msg_backup_title")
-    msg_backup_content = load_lang_file(set_lang, "msg_backup_content")
-    msg_backedup_title = load_lang_file(set_lang, "msg_backedup_title")
-    msg_backedup_content_p1 = load_lang_file(set_lang, "msg_backedup_content_p1")
-    msg_backedup_content_p2 = load_lang_file(set_lang, "msg_backedup_content_p2")
-    msg_backup_fail_title = load_lang_file(set_lang, "msg_backup_fail_title")
-    msg_backup_fail_content = load_lang_file(set_lang, "msg_backup_fail_content")
 
-    msg_data_imported_title = load_lang_file(set_lang, "msg_data_imported_title")
-    msg_data_imported_content_p1 = load_lang_file(set_lang, "msg_data_imported_content_p1")
-    msg_data_imported_content_p2 = load_lang_file(set_lang, "msg_data_imported_content_p2")
-
-    msg_file_notfound_title = load_lang_file(set_lang, "msg_file_notfound_title")
-    msg_file_notfound_content_p1 = load_lang_file(set_lang, "msg_file_notfound_content_p1")
-    msg_file_notfound_content_p2 = load_lang_file(set_lang, "msg_file_notfound_content_p2")
-
-    msg_no_permissions_title = load_lang_file(set_lang, "msg_no_permissions_title")
-    msg_no_permissions_content = load_lang_file(set_lang, "msg_no_permissions_content")
-
-    msg_unknown_error_title = load_lang_file(set_lang, "msg_unknown_error_title")
-    msg_unknown_error_content = load_lang_file(set_lang, "msg_unknown_error_content")
 
     # = load_lang_file(set_lang, "")

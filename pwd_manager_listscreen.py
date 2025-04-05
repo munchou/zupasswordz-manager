@@ -205,14 +205,16 @@ class ListScreen(MDScreen):
                 if child.app_name == self.selected_item:
                     current_item = child
                     break
+
+            print("\nAPP_USER:", current_item.app_user, "index:", self.ids.entries_list.children.index(current_item))
             self.ids.bottom_appbar.action_items = [
                 BottomAppBarButton(
                     icon="open-in-new",
                     icon_color=MDApp.get_running_app().theme_cls.listscreenTopAppBarIconColor,
                     on_release=lambda x: (self.appdetailspage(self.selected_item,
-                                                              current_item.app_user,
+                                                              pwd_manager_utils.decrypt_data(bytes(current_item.app_user[2:-1], "utf-8")),
                                                               pwd_manager_utils.decrypt_data(bytes(current_item.app_pwd[2:-1], "utf-8")),
-                                                              current_item.app_info,
+                                                              pwd_manager_utils.decrypt_data(bytes(current_item.app_info[2:-1], "utf-8")),
                                                               )),
                 ),
                 BottomAppBarButton(
@@ -303,10 +305,14 @@ class ListScreen(MDScreen):
             md_bg_color=(1, 1, 1, 0.9),
         )
         self.new_entry.app_name_update = current_item.app_name
-        self.new_entry.app_user_update = current_item.app_user
+        # self.new_entry.app_user_update = current_item.app_user
         self.new_entry.app_pwd_update = current_item.app_pwd
-        self.new_entry.app_info_update = current_item.app_info
+        # self.new_entry.app_info_update = current_item.app_info
+        self.new_entry.app_user_update = pwd_manager_utils.decrypt_data(bytes(current_item.app_user[2:-1], "utf-8"))
+        self.new_entry.app_info_update = pwd_manager_utils.decrypt_data(bytes(current_item.app_info[2:-1], "utf-8"))
         self.add_widget(self.new_entry)
+
+        
 
     def remove_card(self):
         self.reset_selected()
@@ -323,6 +329,9 @@ class ListScreen(MDScreen):
         pwd_manager_utils.remove_entry_json(self.selected_item, current_item)
         SearchBar().master_list.pop(current_item.app_name)
         self.reset_selected()
+    
+    def update_entry(self):
+        pass
 
 
     def logout(self):
@@ -339,3 +348,16 @@ class ListScreen(MDScreen):
         self.manager.get_screen("listscreen").clear_widgets()
         self.manager.remove_widget(self.manager.get_screen("listscreen"))
         # app.screenmanager.remove_widget(app.screenmanager.get_screen("listscreen")
+    
+
+    def backup_savepage(self):
+        """Adds the backup data page (widget) to the login screen."""
+        from pwd_manager_backuppage import BackupSavePage
+        self.new_entry = BackupSavePage(md_bg_color=(1, 1, 1, 0.9))
+        self.add_widget(self.new_entry)
+    
+    def close_page(self):
+        """Removes the backup data page (widget) that was added
+        to the login screen"""
+        self.remove_widget(self.new_entry)
+        self.new_entry = None

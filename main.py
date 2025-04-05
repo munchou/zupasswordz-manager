@@ -16,11 +16,12 @@ from kivy.clock import mainthread
 from kivy.config import Config
 from kivy.resources import resource_add_path
 
-import os, sys, plyer
+import os, plyer
 
 import pwd_manager_utils
 import pwd_manager_languages
 from pwd_manager_listscreen import ListScreen
+from pwd_manager_appinfopage import InformationPage
 from pwd_manager_settingspage import SettingsPage
 from pwd_manager_languages import Languages
 
@@ -57,7 +58,6 @@ class LoginScreen(MDScreen):
     textfield_password_login_hint = Languages().textfield_password_login_hint
     btn_login = Languages().btn_login
     btn_import_data = Languages().btn_import_data
-    btn_export_data = Languages().btn_export_data
     label_not_registered = Languages().label_not_registered
     textfield_textfield_password_register_hint = Languages().textfield_textfield_password_register_hint
     textfield_password_confirm_hint = Languages().textfield_password_confirm_hint
@@ -141,18 +141,17 @@ class LoginScreen(MDScreen):
         search bar, instead of having to have to decrypt each entry's field every time
         the new list is generated."""
         user_data = pwd_manager_utils.load_user_json()
+        print("MAKING MASTER LIST")
         for item in user_data:
             id = user_data[item][4]
             app_name = pwd_manager_utils.decrypt_data(bytes(item[2:-1], "utf-8"))
-            app_user = pwd_manager_utils.decrypt_data(
-                bytes(user_data[item][0][2:-1], "utf-8")
-            )
-            # app_pwd = pwd_manager_utils.decrypt_data(bytes(user_data[item][1][2:-1], "utf-8"))
+            app_user = user_data[item][0]
             app_pwd = user_data[item][1]
-            app_info = pwd_manager_utils.decrypt_data(
-                bytes(user_data[item][2][2:-1], "utf-8")
-            )
+            app_info = user_data[item][2]
             app_icon = user_data[item][3]
+            # app_user = pwd_manager_utils.decrypt_data(bytes(user_data[item][0][2:-1], "utf-8"))
+            # app_pwd = pwd_manager_utils.decrypt_data(bytes(user_data[item][1][2:-1], "utf-8"))
+            # app_info = pwd_manager_utils.decrypt_data(bytes(user_data[item][2][2:-1], "utf-8"))
 
             self.master_list[app_name] = [
                 app_user,
@@ -185,10 +184,7 @@ class LoginScreen(MDScreen):
             if export:
                 pwd_manager_utils.backup_data_prompt()
             elif import_backup:
-                if kv_platform == "android":
-                    pwd_manager_utils.AndroidGetFile().get_file(username_text)                    
-                else:
-                    pwd_manager_utils.AndroidGetFile().load_backup_data(username_text, "")
+                pwd_manager_utils.show_message(Languages().msg_import_backup_title, Languages().msg_import_backup_msg)
             else: # ID and pwd OK
                 self.make_master_list()
                 self.unbind_key()
@@ -252,19 +248,19 @@ class LoginScreen(MDScreen):
         self.new_entry = SettingsPage(md_bg_color=(1, 1, 1, 0.9))
         self.add_widget(self.new_entry)
     
-    def remove_settingspage(self):
-        """Removes the settings page (widget) that was added
+    def backup_savepage(self):
+        pwd_manager_utils.show_message("IMPORT BACKUP[import]", "messagejk sdkljdslkfj kldsjfkjdfl dkfjlkdfj")
+    
+    def app_informationpage(self):
+        print("APP INFO")
+        self.new_entry = InformationPage(md_bg_color=(1, 1, 1, 0.9))
+        self.add_widget(self.new_entry)
+    
+    def close_page(self):
+        """Removes the backup data page (widget) that was added
         to the login screen"""
         self.remove_widget(self.new_entry)
         self.new_entry = None
-
-    def app_information(self):
-        app_title = "ZUPAsswordz"
-        copyright_version = "©munchou 2024, version b24.12g" # g -> 2024 Dec. 15
-        thanks_to = "Martin (OWDD)\nSnu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec, devilsof (Kivy Discord)"
-        pwd_manager_utils.show_message(app_title, f"{copyright_version}\n\n{Languages().msg_app_info_content} {thanks_to}")
-
-"""Martin (OWDD)\nSnu\nCheaterman\nkuzeyron\nel3phanten\nHamburguesa\nNovfensec (Kivy Discord)"""
 
 
 class PassManagerApp(MDApp):

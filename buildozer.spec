@@ -30,7 +30,7 @@ source.exclude_exts = app_copy.zip, requirements.txt
 source.exclude_patterns = app_copy.zip, compile_app.py, buildozer.spec, poetry.lock, pyproject.toml, send_app_to_phone.py, .vscode, tests, _saved-files
 
 # (str) Application versioning (method 1)
-version = 0.8
+version = 0.9
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -38,7 +38,7 @@ version = 0.8
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy==2.3.0, kivy_reloader, https://github.com/kivymd/KivyMD/archive/master.zip, pycparser==2.22, cryptography, asyncgui==0.6.3, asynckivy==0.6.4, attrs==24.2.0, materialyoucolor==2.0.9, plyer==2.1.0, psutil==5.9.8, sortedcontainers==2.4.0, androidstorage4kivy, bcrypt
+requirements = python3, kivy==2.3.0, kivy_reloader, https://github.com/kivymd/KivyMD/archive/master.zip, pycparser==2.22, cryptography==43.0.3, asyncgui==0.6.3, asynckivy==0.6.4, attrs==24.2.0, materialyoucolor==2.0.9, plyer==2.1.0, psutil==5.9.8, sortedcontainers==2.4.0, androidstorage4kivy, bcrypt
 
 # trio==0.22.2, outcome, exceptiongroup, click==8.1.7, colorama==0.4.6, distlib==0.3.9, docutils==0.21.2, filelock==3.16.1, idna==3.10, Jinja2==3.1.4, kaki==0.1.9, markdown-it-py==3.0.0, MarkupSafe==3.0.2, mdurl==0.1.2, outcome==1.3.0.post0, packaging==24.2, pexpect==4.9.0, platformdirs==4.3.6, , ptyprocess==0.7.0, Pygments==2.18.0, pyproject_hooks==1.2.0, readchar==4.2.1, requests==2.32.3, rich==13.9.4, sh==1.14.3, shellingham==1.5.4, sniffio==1.3.1, stomli==2.1.0, typer==0.12.5, typing_extensions==4.12.2, urllib3==2.2.3, virtualenv==20.27.1, watchdog==6.0.0
 

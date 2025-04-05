@@ -6,6 +6,7 @@ bin
 _env
 z_*
 _saved-files
+temp_files
 keystores
 
 
@@ -14,6 +15,8 @@ keystores
 *.bat
 *.pyc
 *.lock
+*.zip
+*backup*.txt
 
 config.ini
 pwd_manager_api.py

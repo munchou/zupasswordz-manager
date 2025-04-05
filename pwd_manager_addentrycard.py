@@ -109,6 +109,8 @@ class AddEntryCard(MDCard):
             elif app_pwd_text != app_pwd_confirm_text:
                 pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_passwords_nomatch)
                 error = True
+            # elif app_pwd_text == "********":
+            #     app_pwd_text = decrypt_data(bytes(current_item.app_pwd[2:-1], "utf-8"))
         else:
             pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_password_charnum)
             error = True
@@ -129,6 +131,7 @@ class AddEntryCard(MDCard):
             self.unbind_key()
 
     def add_entry(self, id, app_name, app_user, app_pwd, app_info, app_icon):
+        print("\nADD ENTRY:\npwd:", app_pwd)
         from pwd_manager_listscreen import SearchBar
 
         app = MDApp.get_running_app()
@@ -139,6 +142,11 @@ class AddEntryCard(MDCard):
             return
 
         if self.button_text == Languages().btn_update_entry:
+            if app_pwd == "********":
+                print("master list pwd:", app_pwd)
+                print("listscreen.selected_item:", listscreen.selected_item)
+                app_pwd = pwd_manager_utils.decrypt_data(bytes(pwd_manager_utils.get_app_pwd(listscreen.selected_item)[2:-1], "utf-8"))
+
             pwd_manager_utils.update_json(
                 listscreen,
                 id,
@@ -186,7 +194,7 @@ class AddEntryCard(MDCard):
         listscreen.reset_selected()
 
         pwd_manager_utils.add_entry_list(
-            entries_list, id, app_name, app_user, str(pwd_manager_utils.encrypt_data(app_pwd)), app_info, app_icon
+            entries_list, id, app_name, str(pwd_manager_utils.encrypt_data(app_user)), str(pwd_manager_utils.encrypt_data(app_pwd)), str(pwd_manager_utils.encrypt_data(app_info)), app_icon
         )
 
         entries_list.children = sorted(

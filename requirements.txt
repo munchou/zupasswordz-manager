@@ -4,6 +4,7 @@ asyncgui==0.6.3
 asynckivy==0.6.4
 attrs==24.2.0
 bcrypt==4.2.1
+Brotli==1.1.0
 build==1.2.2.post1
 buildozer==1.5.0
 certifi==2024.8.30
@@ -18,6 +19,7 @@ docutils==0.21.2
 exceptiongroup==1.2.2
 filelock==3.16.1
 idna==3.10
+inflate64==1.0.1
 Jinja2==3.1.4
 kaki==0.1.9
 Kivy==2.3.0
@@ -28,6 +30,7 @@ markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 materialyoucolor==2.0.9
 mdurl==0.1.2
+multivolumefile==0.2.3
 outcome==1.3.0.post0
 packaging==24.2
 pexpect==4.9.0
@@ -36,9 +39,14 @@ platformdirs==4.3.6
 plyer==2.1.0
 psutil==5.9.8
 ptyprocess==0.7.0
+pybcj==1.0.3
 pycparser==2.22
+pycryptodome==3.22.0
+pycryptodomex==3.22.0
 Pygments==2.18.0
+pyppmd==1.1.1
 pyproject_hooks==1.2.0
+pyzstd==0.16.2
 readchar==4.2.1
 requests==2.32.3
 rich==13.9.4
@@ -46,6 +54,7 @@ sh==1.14.3
 shellingham==1.5.4
 sniffio==1.3.1
 sortedcontainers==2.4.0
+texttable==1.7.0
 toml==0.10.2
 tomli==2.1.0
 trio==0.22.2

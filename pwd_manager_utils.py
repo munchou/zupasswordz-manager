@@ -1,8 +1,9 @@
 import hashlib
 import plyer
 from datetime import datetime
-import json, os
-from os.path import exists, join, basename
+import json
+import os
+from os.path import exists
 import shutil
 import platform
 import configparser
@@ -16,11 +17,7 @@ from configparser import ConfigParser
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-
-# from androidstorage4kivy import (
-#     SharedStorage,
-#     Chooser,
-# )  # all the job is done via these two modules
+from cryptography.hazmat.backends import default_backend
 
 from kivymd.app import MDApp
 from kivymd.uix.list import (
@@ -181,6 +178,7 @@ def show_message(title, message):
     message, height = process_message(message)
     backup = False
     close_app = False
+    import_backup = False
 
     if "[backup]" in title:
         title = title.replace("[backup]", "")
@@ -189,6 +187,10 @@ def show_message(title, message):
     elif "[close_app]" in title:
         title = title.replace("[close_app]", "")
         close_app = True
+    
+    elif "[import]" in title:
+        title = title.replace("[import]", "")
+        import_backup = True
 
     btn_ok = Button(
         text=Languages().btn_confirm_backup if backup else Languages().btn_close_app if close_app else Languages().btn_ok,
@@ -209,6 +211,27 @@ def show_message(title, message):
         height="40dp",
         pos_hint={"center_x": 0.5},
     )
+
+    from kivy.uix.textinput import TextInput
+    from kivymd.uix.textfield.textfield import MDTextField, MDTextFieldHintText
+    pwdinput = MDTextField(MDTextFieldHintText(text=Languages().textfield_import_data_pwd,
+                                               theme_text_color="Custom",
+                                               text_color_normal=MDApp.get_running_app().theme_cls.textfieldIconColor),
+                            text="",
+                            multiline=False,
+                            password=True,
+                            mode="filled",
+                            theme_bg_color="Custom",
+                            fill_color_normal=MDApp.get_running_app().theme_cls.textfieldBgColor,
+                            fill_color_focus=MDApp.get_running_app().theme_cls.textfieldBgColorFocus,
+                            theme_text_color="Custom",
+                            text_color_normal=MDApp.get_running_app().theme_cls.textfieldTextColor,
+                            text_color_focus=MDApp.get_running_app().theme_cls.textfieldTextColorFocus,
+                            theme_line_color="Custom",
+                            line_color_normal=MDApp.get_running_app().theme_cls.textfieldLineColor,
+                            line_color_focus=MDApp.get_running_app().theme_cls.textfieldLineColorFocus,
+                            
+                            )
 
     # layout = MDBoxLayout(orientation="vertical")
     layout = MDBoxLayout(
@@ -240,6 +263,12 @@ def show_message(title, message):
         update_btns_layout.add_widget(btn_close)
         layout.add_widget(update_btns_layout)
     
+    elif import_backup:
+        update_btns_layout.add_widget(btn_ok)
+        update_btns_layout.add_widget(btn_close)
+        layout.add_widget(pwdinput)
+        layout.add_widget(update_btns_layout)
+
     elif close_app:
         update_btns_layout.add_widget(btn_ok)
         update_btns_layout.add_widget(btn_close)
@@ -260,6 +289,9 @@ def show_message(title, message):
         title_height = 131
         # fonts_height = 17+6
         # title_height = 126
+
+    importbackup_height = dp(80) if import_backup else dp(0)
+
     popup = Popup(
         title=title,
         title_size="20sp",
@@ -270,7 +302,7 @@ def show_message(title, message):
         overlay_color=MDApp.get_running_app().theme_cls.popupBgOverlay,
         size_hint=(None, None),
         # size=(resolution_width - dp(20), dp(title_height) + dp(fonts_height)*height),
-        size=(resolution_width - dp(20), dp(title_height + fonts_height*height)),
+        size=(resolution_width - dp(20), dp(title_height + fonts_height*height + importbackup_height)),
     )
 
     popup.open()
@@ -278,7 +310,11 @@ def show_message(title, message):
     # btn_ok.bind(on_release=popup.dismiss)
     if backup:
         username = os.environ.get("pwdzmanuser")
-        btn_ok.bind(on_release=lambda x: backup_data(username))
+        btn_ok.bind(on_release=lambda x: data_backup(username))
+    
+    if import_backup:
+        username = os.environ.get("pwdzmanuser")
+        btn_ok.bind(on_release=lambda x: import_backup_pwd(username, pwdinput.text))
     
     if close_app:
         btn_ok.bind(on_release=lambda x: exit())
@@ -416,6 +452,21 @@ def app_name_exists(app_name, button_text, listscreen):
                 return True
 
         return False
+    
+
+def get_app_pwd(selected_item):
+    username = hasher(os.environ.get("pwdzmanuser"), "")
+    with open(f"{username}.json", "r") as file:
+        user_data = json.load(file)
+        for app in user_data:
+            # print("app:", app)
+            # print(user_data[app][1])
+            if decrypt_data(bytes(app[2:-1], "utf-8")) == selected_item:
+                # print("Item found:", app, selected_item)
+                # print(decrypt_data(bytes(user_data[app][1][2:-1], "utf-8")))
+                app_pwd = user_data[app][1]
+                break
+        return app_pwd
 
 
 def add_to_json(id, app_name, app_user, app_pwd, app_info, app_icon):
@@ -475,6 +526,7 @@ def load_user_json():
 
 
 def update_json(listscreen, id, app_name, app_user, app_pwd, app_info, app_icon):
+    # print("\nUPDATE JSON", "/napp_name", app_name, "\napp_user", app_user, "\napp_pwd", app_pwd, "\napp_info", app_info)
     username = hasher(os.environ.get("pwdzmanuser"), "")
     selected_item = listscreen.selected_item
     entries_list = listscreen.ids.entries_list
@@ -485,6 +537,7 @@ def update_json(listscreen, id, app_name, app_user, app_pwd, app_info, app_icon)
     for child in entries_list.children:
         if child.app_name == selected_item:
             current_item = child
+            entry_index = entries_list.children.index(current_item)
             break
 
     with open(f"{username}.json", "r") as file:
@@ -495,8 +548,10 @@ def update_json(listscreen, id, app_name, app_user, app_pwd, app_info, app_icon)
                 user_data.pop(item)
                 break
         # test1234
-        # if app_pwd == "********":
-        #     app_pwd = decrypt_data(bytes(current_item.app_pwd[2:-1], "utf-8"))
+        if app_pwd == "********":
+            print("WARNING, app_pwd is ********")
+            app_pwd = decrypt_data(bytes(current_item.app_pwd[2:-1], "utf-8"))
+            # print("Corrected app_pwd:", app_pwd)
         # print("UTILS UPDATE_JSON app_pwd:", app_pwd)
         user_data.update(
             {
@@ -509,6 +564,12 @@ def update_json(listscreen, id, app_name, app_user, app_pwd, app_info, app_icon)
                 ]
             }
         )
+        # print("\nUPDATED:", str(encrypt_data(app_name)),
+        #     str(encrypt_data(app_user)),
+        #     str(encrypt_data(app_pwd)),
+        #     str(encrypt_data(app_info)))
+        
+        # print("CURRENT ITEM:", current_item, "Index:", entry_index)
 
     with open(f"{username}.json", "w") as file:
         json.dump(user_data, file, indent=4)
@@ -648,45 +709,86 @@ def backup_data_prompt():
     show_message(Languages().msg_backup_title, Languages().msg_backup_content)
 
 
-def backup_data(username):
+def data_backup(password, status, imported_file):
     from pwd_manager_languages import Languages
+    username = os.environ.get("pwdzmanuser")
     user_hashed = hasher(username, "")
-    filename = f'{username}_backup_{datetime.now().strftime("%Y%m%d_%H%M%S")}.txt'
+    filename = f'{username}_backup_{datetime.now().strftime("%Y%m%d_%H%M")}.txt'
     save_path = ""
+
     if kv_platform == "android":
         from android.storage import primary_external_storage_path
         request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
         save_path = primary_external_storage_path()
         print("Android save_path:", save_path) # /storage/emulated/0
         save_path += "/Download/"
+    
+    # FERNET part
 
-    try:
-        backup_file = open(f"{save_path}{filename}", "w")
+    secret_password = bytes(password, "utf-8")
+    salt = b""
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=1_200_000, # 480000
+        backend=default_backend()
+    )
+    key = base64.urlsafe_b64encode(kdf.derive(secret_password))
+    f = Fernet(key)
 
-        with open(f"{user_hashed}.json", "r") as file:
-            user_data = json.load(file)
-            backup_file.write(
-                "ORDER: [app name;;; username/e-mail;;; password;;; info (if any);;; app icon;;; id]"
-            )
+    if status == "backup":
+        try:
+            decrypted_backup = "ORDER: [app name;;; username/e-mail;;; password;;; info (if any);;; app icon;;; id]\n"
+
+            with open(f"{user_hashed}.json", "r") as file:
+                user_data = json.load(file)
+
             for item in user_data:
+                id = user_data[item][4]
                 app_name = decrypt_data(bytes(item[2:-1], "utf-8"))
                 app_user = decrypt_data(bytes(user_data[item][0][2:-1], "utf-8"))
                 app_pwd = decrypt_data(bytes(user_data[item][1][2:-1], "utf-8"))
                 app_info = decrypt_data(bytes(user_data[item][2][2:-1], "utf-8"))
                 app_icon = user_data[item][3]
-                id = user_data[item][4]
 
-                if app_info == "":
-                    app_info = "none"
-                backup_file.write(
-                    f"\n{app_name};;; {app_user};;; {app_pwd};;; {app_info};;; {app_icon};;; {id}"
-                )
+                decrypted_backup += f"{app_name};;; {app_user};;; {app_pwd};;; {app_info};;; {app_icon};;; {id}\n"
 
-        show_message(
-            Languages().msg_backedup_title, f'{Languages().msg_backedup_content_p1} "{filename}".\n\n{Languages().msg_backedup_content_p2}')
-    except Exception as e:
-        print(f"BACKUP permission error (or something else...): {e}")
-        show_message(Languages().msg_backup_fail_title, Languages().msg_backup_fail_content)
+            decrypted_backup = decrypted_backup[:-1]
+
+            
+            encrypted_backup = f.encrypt(bytes(decrypted_backup, "utf-8"))
+            # print("encrypted_backup:", encrypted_backup)
+
+            with open(f"{save_path}{filename}", "w") as txtfile:
+                txtfile.write(encrypted_backup.decode())
+
+            show_message(
+                Languages().msg_backedup_title, f'{Languages().msg_backedup_content_p1} "{filename}".\n\n{Languages().msg_backedup_content_p2}')
+        except Exception as e:
+            print(f"BACKUP permission error (or something else...): {e}")
+            show_message(Languages().msg_backup_fail_title, Languages().msg_backup_fail_content)
+    
+    elif status == "load_data":
+        print("IMPORTING FILE")
+        with open(imported_file) as backedup_data:
+            data_file = backedup_data.read()
+            # print("data_file:", data_file)
+        print("DECRYPTED CONTENT:")
+        if data_file.startswith("ORDER:"):
+            print('data_file.startswith("ORDER:")')
+            return data_file
+        else:
+            try:
+                decrypted_file = f.decrypt(bytes(data_file, "utf-8"))
+                decrypted_file = decrypted_file.decode("utf-8")
+                # print(decrypted_file)
+                return decrypted_file
+            except Exception as e:
+                print("Error in decrypting the file: wrong password.")
+                print(e)
+                decrypted_file = "wrong_pwd"
+                return decrypted_file
 
 
 def check_imported_item(app_user, app_pwd, id):
@@ -703,17 +805,26 @@ def check_imported_item(app_user, app_pwd, id):
     return good_input, get_id
 
 
+def import_backup_pwd(username, input_password):
+    AndroidGetFile.decrypting_password = input_password
+    if kv_platform == "android":
+        AndroidGetFile().get_file(username)                    
+    else:
+        AndroidGetFile().load_backup_data(username, "")
+
+
 class AndroidGetFile:
     get_file_error = ""
     get_file_exception = None
     apps_added = ""
     apps_not_added = ""
     len_apps = None
+    decrypting_password = ""
 
     def get_file(self, username):
         request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])  # get the permissions needed
         self.username = username
-        print("get_file username:", self.username)
+        # print("get_file username:", self.username)
         self.opened_file = None  # file path to load, None initially, changes later on
         self.cache = SharedStorage().get_cache_dir()  #  file cache in the private storage (for cleaning purposes)
         
@@ -725,8 +836,8 @@ class AndroidGetFile:
 
     def chooser_callback(self, uri_list):
         """ Callback handling the chooser """
-        print("chooser_callback method")
-        print("uri_list:", uri_list)
+        # print("chooser_callback method")
+        # print("uri_list:", uri_list)
         try:
             for uri in uri_list:               
 
@@ -738,8 +849,8 @@ class AndroidGetFile:
                 self.opened_file = SharedStorage().copy_from_shared(uri)
 
                 self.uri = uri  # just to keep the uri for future reference
-                print("URI:", uri)
-                print("self.opened_file:", self.opened_file)
+                # print("URI:", uri)
+                # print("self.opened_file:", self.opened_file)
 
                 if self.opened_file is not None:
                     print("file to import found, importing...")
@@ -755,7 +866,7 @@ class AndroidGetFile:
 
     # @mainthread
     def load_backup_data(self, username, imported_file):
-        """File name must be: "username_importbackup.txt"
+        """File name must be: "username_backup.txt"
         and must be located in the "Download" folder for Android
         or at the root of the program for a regular OS.
         The file system in Android has evolved, it is no longer paths
@@ -763,9 +874,21 @@ class AndroidGetFile:
         even crash with a 'Errno 13 Permission denied'."""
 
         if imported_file == "":
-            imported_file = f"{username}_importbackup.txt"
+            for file in os.listdir():
+                if file.startswith(f"{username}_backup_") and file.endswith(".txt"):
+                    imported_file = file
+                    # print("File found:", imported_file)
+                    break
+            if imported_file == "":
+                print("NO BACKUP FILE FOUND")
+                show_message("NO BACKUP FILE FOUND", "File name should be:\n [username]_backup_[...].txt")
+                return
 
-        print("imported file:", imported_file)
+        imported_data = data_backup(self.decrypting_password, "load_data", imported_file)
+        
+        if imported_data == "wrong_pwd":
+            msg_import_wrongpwd()
+            return
 
         available_apps = []
         available_ids = []
@@ -781,58 +904,57 @@ class AndroidGetFile:
             available_apps.append(app_name)
             available_ids.append(id)
 
-        print("available_apps:", available_apps)
+        # print("available_apps:", available_apps)
 
         try:
-            with open(imported_file, "r") as file:
-                user_data = file.read()
-                user_data = user_data.split("\n")
-                for item in user_data[1:]:
-                    item = item.split(";;;")
-                    if len(item) == 6:
-                        app_name = item[0].strip()
-                        print("app_name:", app_name)
-                        id = item[5].strip()
-                        while True:
-                            if id in available_ids:
+            imported_data = imported_data.splitlines()
+            for item in imported_data[1:]:
+                item = item.split(";;;")
+                if len(item) == 6:
+                    app_name = item[0].strip()
+                    # print("app_name:", app_name)
+                    id = item[5].strip()
+                    while True:
+                        if id in available_ids:
+                            id = uuid.uuid4().hex
+                            continue
+                        break
+                    if app_name not in available_apps:
+                        app_user = item[1].strip()
+                        app_pwd = item[2].strip()
+                        app_info = item[3].strip()
+                        app_icon = item[4].strip()
+                        good_input, get_id = check_imported_item(app_user, app_pwd, id)
+                        if good_input:
+                            if get_id:
                                 id = uuid.uuid4().hex
-                                continue
-                            break
-                        if app_name not in available_apps:
-                            app_user = item[1].strip()
-                            app_pwd = item[2].strip()
-                            app_info = item[3].strip()
-                            app_icon = item[4].strip()
-                            good_input, get_id = check_imported_item(app_user, app_pwd, id)
-                            if good_input:
-                                if get_id:
-                                    id = uuid.uuid4().hex
-                                add_to_json(
-                                    id, app_name, app_user, app_pwd, app_info, app_icon
-                                )
-                                apps_added += 1
-                            else:
-                                apps_not_added += f"{app_name}, "
-                                # apps_not_added.append(app_name)
+                            add_to_json(
+                                id, app_name, app_user, app_pwd, app_info, app_icon
+                            )
+                            apps_added += 1
                         else:
                             apps_not_added += f"{app_name}, "
                             # apps_not_added.append(app_name)
                     else:
                         apps_not_added += f"{app_name}, "
                         # apps_not_added.append(app_name)
-                
-                self.get_file_error = "import_ok"
-                self.apps_added = apps_added
-                self.apps_not_added = apps_not_added
-                self.len_apps = len(user_data[1:])
+                else:
+                    apps_not_added += f"{app_name}, "
+                    # apps_not_added.append(app_name)
+            
+            self.get_file_error = "import_ok"
+            self.apps_added = apps_added
+            self.apps_not_added = apps_not_added
+            self.len_apps = len(imported_data[1:])
 
-                # MESSAGE POPUP
-                msg_data_imported(apps_added, user_data, apps_not_added)                
-                print(
-                    f"{apps_added}/{len(user_data[1:])} entries were imported.\nApps not imported ({len(user_data[1:]) - apps_added}):\n{apps_not_added[:-2]}"
-                )
+            # MESSAGE POPUP
+            msg_data_imported(apps_added, imported_data, apps_not_added)                
+            print(
+                f"{apps_added}/{len(imported_data[1:])} entries were imported.\nApps not imported ({len(imported_data[1:]) - apps_added}):\n{apps_not_added[:-2]}"
+            )
 
-                return None, None
+            return None, None
+        
 
         except Exception as e:
             print("IMPORT EXCEPTION:", e)
@@ -843,7 +965,7 @@ class AndroidGetFile:
                 # MESSAGE POPUP
                 msg_file_not_found(username)
                 print(
-                    f'IMPORT FILE NOT FOUND - The backup file "{username}_importbackup.txt" was not found.'
+                    f'IMPORT FILE NOT FOUND - The backup file "{username}_backup.txt" was not found.'
                 )
             elif e == PermissionError:
                 self.get_file_error = "permissionerror"
@@ -868,7 +990,7 @@ def msg_data_imported(apps_added, user_data, apps_not_added):
 @mainthread
 def msg_file_not_found(username):
     from pwd_manager_languages import Languages
-    show_message(Languages().msg_file_notfound_title, f"""{Languages().msg_file_notfound_content_p1} "{username}_importbackup.txt" {Languages().msg_file_notfound_content_p2}""")
+    show_message(Languages().msg_file_notfound_title, f"""{Languages().msg_file_notfound_content_p1} "{username}_backup.txt" {Languages().msg_file_notfound_content_p2}""")
 
 @mainthread
 def msg_no_permissions():
@@ -879,3 +1001,8 @@ def msg_no_permissions():
 def msg_unknown_error(e):
     from pwd_manager_languages import Languages
     show_message(Languages().msg_unknown_error_title, f"""{Languages().msg_unknown_error_content}\n\n{e}""")
+
+@mainthread
+def msg_import_wrongpwd():
+    from pwd_manager_languages import Languages
+    show_message(Languages().msg_data_import_wrongpwd_title, Languages().msg_data_import_wrongpwd_content)

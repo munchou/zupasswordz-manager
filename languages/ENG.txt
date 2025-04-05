@@ -8,7 +8,6 @@ main_title = Welcome
 textfield_username_hint = username
 textfield_password_login_hint = password
 btn_login = LOG IN
-btn_import_data = IMPORT DATA
 btn_export_data = EXPORT DATA
 label_not_registered = Not registered? Create an account
 textfield_textfield_password_register_hint = password (8 char. min.)
@@ -27,7 +26,50 @@ msg_username_used = That username is already used. Please choose another one.
 msg_registration_ok_title = Banzai!
 msg_registration_ok_content = You can now log in with the username and password you just registered \o/
 
-msg_app_info_content = Tools of the trade: Python 3.10.2 [returnz] Kivy 2.3.0 and Kivy MD 2.0.1 (dev0). [returnz] And love. And time. And tears of blood... [returnz]  [returnz] The code is Open Source, feel free to study it, improve the app or reuse part of it. [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] Commercial use in any way is NOT allowed. [returnz]  [returnz] Special thanks to:
+msg_app_info_content1 = [u]1. General stuff[/u] [returnz] [u]2. Privacy policy[/u] [returnz] [u]3. Data safety/security[/u] [returnz]  [returnz] [u]1. General stuff[/u] [returnz] Tools of the trade: [returnz] - Python 3.10.2 [returnz] - Kivy 2.3.0 [returnz] - Kivy MD 2.0.1 (dev0). [returnz] And love. And time. And tears of blood... [returnz] The code is Open Source, feel free to study it, improve the app or reuse part of it (reselling is forbidden). [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] Commercial use in any way is NOT allowed. [returnz]  [returnz] Special thanks to:
+
+msg_app_info_content2 = [u]2. Privacy policy[/u] [returnz] This is a fully OFFLINE application (yea, it still exists in 2025). None of your data is collected, there is no third party nor server connection whatsoever. If you ever notice the app trying to access the internet, stop using it and contact me as soon as you can. [returnz]  [returnz] [u]3. Data safety/security[/u] [returnz] Your data is completely encrypted locally on your device, and the encrypting/decrypting key is dependent on that device. The main advantage is that if your database were to ever be stolen as well as your credentials, it wouldn't be possible to decrypt the content. The downside is that if your phone dies on you and you still manage to retrieve the database, it'd be useless. Hence the necessity of doing a backup from time to time. [returnz]  [returnz] I hope that passwords manager makes your life a little easier! [returnz] - munchou
+
+
+# INFORMATION PAGE
+info_page_title = INFORMATION
+
+
+# IMPORT BACKUP
+btn_import_data = IMPORT DATA
+msg_import_backup_title = IMPORT BACKUP[import]
+msg_import_backup_msg = Please enter the password used when you created that backup. [returnz] Leave empty if you are importing a non-encrypted file.
+
+textfield_import_data_pwd = Decrypting password (if needed) 
+msg_data_imported_title = DATA IMPORTED
+msg_data_imported_content_p1 = entries were imported.
+msg_data_imported_content_p2 = Apps not imported
+
+msg_file_notfound_title = FILE NOT FOUND
+msg_file_notfound_content_p1 = The backup file
+msg_file_notfound_content_p2 = was not found.
+
+msg_no_permissions_title = ERROR - PERMISSIONS DENIED
+msg_no_permissions_content = An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device (that's not supposed to happen, you should contact munchou, the maker of that app).
+
+msg_unknown_error_title = UNKNOWN IMPORT ERROR
+msg_unknown_error_content = An error occurred while trying to load the file...
+
+msg_data_import_wrongpwd_title = DECRYPTION FAILED
+msg_data_import_wrongpwd_content = The content of the selected file could not be decrypted. [returnz] Are you sure you entered the right password?
+
+
+# BACKUP PAGE
+backup_title = BACKUP DATA
+backup_info = You are about to backup all your data. [returnz]  [returnz] Process: [returnz] - your data is decrypted inside the app [returnz] - it is then re-encrypted using the password you chose, and saved in a text (TXT) file [returnz] - that TXT file is saved in your "Download" folder [returnz]  [returnz] Please choose a strong password and keep that file in a safe place (ideally NOT on your PC).
+btn_backup = BACKUP MY DATA
+
+msg_backedup_title = DATA BACKED UP
+msg_backedup_content_p1 = Your ENCRYPTED data was successfully backed up! [returnz] You will find it in the file
+msg_backedup_content_p2 = And remember! Keep that file in a safe place!
+
+msg_backup_fail_title = FAILURE - DATA NOT BACKED UP
+msg_backup_fail_content = An error occurred. It is likely that the app does not have the required permission(s) to write the file on your device (that's not supposed to happen, you should contact munchou, the maker of that app).
 
 
 # LIST SCREEN with ADD/UPDATE ENTRY
@@ -68,24 +110,3 @@ btn_ok = OK
 btn_cancel = CANCEL
 msg_appname_exists = has already been added. Please update it by selecting it in your list and then clicking the little pencil.
 msg_appname_used = is already in use, please choose another name.
-msg_backup_title = BACK UP DATA?[backup]
-msg_backup_content = You are about to back your data up. [returnz]  [returnz] Beware! The exported data will NOT be encrypted, so anyone who has access to it will have access to your passwords! [returnz] Don't lose it and keep it safe!
-msg_backedup_title = DATA BACKED UP
-msg_backedup_content_p1 = Your data was successfully backed up! [returnz] You will find it in the file
-msg_backedup_content_p2 = And remember! The data in that file is NOT encrypted!
-msg_backup_fail_title = FAILURE - DATA NOT BACKED UP
-msg_backup_fail_content = An error occurred. It is likely that the app does not have the required permission(s) to write the file on your device (that's not supposed to happen, you should contact munchou, the maker of that app).
-
-msg_data_imported_title = DATA IMPORTED
-msg_data_imported_content_p1 = entries were imported.
-msg_data_imported_content_p2 = Apps not imported
-
-msg_file_notfound_title = FILE NOT FOUND
-msg_file_notfound_content_p1 = The backup file
-msg_file_notfound_content_p2 = was not found.
-
-msg_no_permissions_title = ERROR - PERMISSIONS DENIED
-msg_no_permissions_content = An error occurred. It is likely that the app does not have the required permission(s) to load the file from your device (that's not supposed to happen, you should contact munchou, the maker of that app).
-
-msg_unknown_error_title = UNKNOWN IMPORT ERROR
-msg_unknown_error_content = An error occurred while trying to load the file...
