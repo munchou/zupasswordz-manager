@@ -8,7 +8,6 @@ main_title = ようこそ
 textfield_username_hint = ウーザー名
 textfield_password_login_hint = パスワード
 btn_login = ログイン
-btn_import_data = インポートする
 btn_export_data = エクスポートする
 label_not_registered = アカウントを持っていない？こちらへ！
 textfield_textfield_password_register_hint = パスワード（8文字以上）
@@ -27,7 +26,53 @@ msg_username_used = そのユーザー名は既に使用されています。別
 msg_registration_ok_title = バンザイ！
 msg_registration_ok_content = 登録したユーザー名とパスワードでログインできます \o/
 
-msg_app_info_content = 仕事のツール: Python 3.10.2 [returnz] Kivy 2.3.0 および Kivy MD 2.0.1 (dev0) [returnz] そして愛。そして時間。そして血の涙... [returnz]  [returnz] コードはオープンソースです。自由に研究したり、アプリを改良したり、その一部を再利用したりしてください。 [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] いかなる形態でも商用利用は許可されていません。 [returnz]  [returnz] 特別な感謝:
+msg_app_info_content1 = [u]1. 一般的な事項[/u] [returnz] [u]2. プライバシー ポリシー[/u] [returnz] [u]3. データの安全性/セキュリティ[/u] [returnz]  [returnz] [u]1. 一般的な事項[/u] [returnz] 仕事のツール: [returnz] - Python 3.10.2 [returnz] - Kivy 2.3.0 [returnz] - Kivy MD 2.0.1 (dev0) [returnz] そして愛。そして時間。そして血の涙... [returnz]  コードはオープンソースです。自由に研究したり、アプリを改良したり、その一部を再利用したりしてください (再販は禁止されています)。 [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] いかなる形態でも商用利用は許可されていません。 [returnz]  [returnz] 特別な感謝:
+
+msg_app_info_content2 = [u]2. プライバシー ポリシー[/u] [returnz] これは完全にオフラインのアプリケーションです (そうです、2025 年でもまだ存在しています)。あなたのデータは収集されず、第三者やサーバーとの接続は一切ありません。アプリがインターネットにアクセスしようとしていることに気づいたら、使用を中止し、できるだけ早く私に連絡してください。 [returnz]  [returnz] [u]3. データの安全性/セキュリティ[/u] [returnz] あなたのデータはデバイス上でローカルに完全に暗号化され、暗号化/復号化キーはそのデバイスに依存します。主な利点は、データベースや認証情報が盗まれた場合でも、コンテンツを復号化できないことです。欠点は、携帯電話が故障してもデータベースを取得できたとしても役に立たないことです。そのため、定期的にバックアップを行う必要があります。 [returnz]  [returnz] このパスワード マネージャーがあなたの生活を少しでも楽にしてくれることを願っています! [returnz] - munchou
+
+
+# INFORMATION PAGE
+info_page_title = 情報
+
+
+# IMPORT BACKUP
+btn_import_data = データをインポート
+msg_import_backup_title = データをインポート[import]
+msg_import_backup_msg = バックアップを作成したときに使用したパスワードを入力してください。 [returnz] 暗号化されていないファイルをインポートする場合は空白のままにしてください。
+
+textfield_import_data_pwd = パスワードの復号化（必要な場合）
+
+msg_data_imported_title = データがインポートされました
+msg_data_imported_content_p1 = 件のエントリがインポートされました。
+msg_data_imported_content_p2 = インポートされなかったアプリ
+
+msg_file_notfound_title = ファイルが見つかりません
+msg_file_notfound_content_p1 = バックアップ ファイル
+msg_file_notfound_content_p2 = が見つかりませんでした。
+
+msg_no_permissions_title = エラー - 権限が拒否されました
+msg_no_permissions_content = エラーが発生しました。デバイスからファイルを読み込むために必要な権限がアプリにない可能性があります (これは発生しないはずなので、アプリのメーカーである munchou に問い合わせてください)。
+
+msg_unknown_error_title = 不明なインポート エラー
+msg_unknown_error_content = ファイルの読み込み中にエラーが発生しました。。。
+
+msg_data_import_wrongpwd_title = 復号化に失敗しました
+msg_data_import_wrongpwd_content = 選択したファイルの内容を復号化できませんでした。 [returnz] 正しいパスワードを入力しましたか?
+
+
+# BACKUP PAGE
+backup_title = データをバックアップ
+msg_backup_title = データをバックアップしますか?[backup]
+backup_info = すべてのデータをバックアップしようとしています。 [returnz]  [returnz] プロセス: [returnz] データはアプリ内で復号化され、選択したパスワードを使用して再暗号化され、「ダウンロード」フォルダ内のテキスト (TXT) ファイルに保存されます。 [returnz]  [returnz] 強力なパスワードを選択し、そのファイルを安全な場所 ​​(理想的には携帯電話/PC ではない場所) に保管してください。
+
+btn_backup = データをバックアップする
+
+msg_backedup_title = バックアップされました
+msg_backedup_content_p1 = データのバックアップに成功しました! [returnz] 次のファイルで確認できます:
+msg_backedup_content_p2 = 覚えておいてください! そのファイル内のデータは暗号化されていません!
+
+msg_backup_fail_title = 失敗 - データがバックアップされていません
+msg_backup_fail_content = エラーが発生しました。アプリにデバイスにファイルを書き込むために必要な権限がない可能性があります (これは発生しないはずなので、アプリのメーカーである munchou に問い合わせてください)。
 
 
 # LIST SCREEN with ADD/UPDATE ENTRY
@@ -68,30 +113,3 @@ btn_ok = OK
 btn_cancel = キャンセル
 msg_appname_exists = はすでに追加されています。リストで選択して小さな鉛筆をクリックして更新してください。
 msg_appname_used = はすでに使用されています。別の名前を選択してください。
-msg_backup_title = データをバックアップしますか?[backup]
-msg_backup_content = データをバックアップしようとしています。 [returnz]  [returnz] 注意してください! エクスポートされたデータは暗号化されないので、アクセスできる人は誰でもあなたのパスワードにアクセスできます! [returnz] 紛失しないように、安全に保管してください!
-msg_backedup_title = バックアップされました
-msg_backedup_content_p1 = データのバックアップに成功しました! [returnz] 次のファイルで確認できます:
-msg_backedup_content_p2 = 覚えておいてください! そのファイル内のデータは暗号化されていません!
-msg_backup_fail_title = 失敗 - データがバックアップされていません
-msg_backup_fail_content = エラーが発生しました。アプリにデバイスにファイルを書き込むために必要な権限がない可能性があります (これは発生しないはずなので、アプリのメーカーである munchou に問い合わせてください)。
-
-msg_data_imported_title = データがインポートされました
-msg_data_imported_content_p1 = 件のエントリがインポートされました。
-msg_data_imported_content_p2 = インポートされなかったアプリ
-
-msg_file_notfound_title = ファイルが見つかりません
-msg_file_notfound_content_p1 = バックアップ ファイル
-msg_file_notfound_content_p2 = が見つかりませんでした。
-
-msg_no_permissions_title = エラー - 権限が拒否されました
-msg_no_permissions_content = エラーが発生しました。デバイスからファイルを読み込むために必要な権限がアプリにない可能性があります (これは発生しないはずなので、アプリのメーカーである munchou に問い合わせてください)。
-
-msg_unknown_error_title = 不明なインポート エラー
-msg_unknown_error_content = ファイルの読み込み中にエラーが発生しました。。。
-
-
-
-
-
-

@@ -40,7 +40,8 @@ btn_import_data = IMPORT DATA
 msg_import_backup_title = IMPORT BACKUP[import]
 msg_import_backup_msg = Please enter the password used when you created that backup. [returnz] Leave empty if you are importing a non-encrypted file.
 
-textfield_import_data_pwd = Decrypting password (if needed) 
+textfield_import_data_pwd = Decrypting password (if needed)
+
 msg_data_imported_title = DATA IMPORTED
 msg_data_imported_content_p1 = entries were imported.
 msg_data_imported_content_p2 = Apps not imported
@@ -61,7 +62,7 @@ msg_data_import_wrongpwd_content = The content of the selected file could not be
 
 # BACKUP PAGE
 backup_title = BACKUP DATA
-backup_info = You are about to backup all your data. [returnz]  [returnz] Process: [returnz] - your data is decrypted inside the app [returnz] - it is then re-encrypted using the password you chose, and saved in a text (TXT) file [returnz] - that TXT file is saved in your "Download" folder [returnz]  [returnz] Please choose a strong password and keep that file in a safe place (ideally NOT on your PC).
+backup_info = You are about to backup all your data. [returnz]  [returnz] Process: [returnz] - your data is decrypted inside the app [returnz] - it is then re-encrypted using the password you chose, and saved in a text (TXT) file [returnz] - that TXT file is saved in your "Downloads" folder [returnz]  [returnz] Please choose a strong password and keep that file in a safe place (ideally NOT on your phone/PC).
 btn_backup = BACKUP MY DATA
 
 msg_backedup_title = DATA BACKED UP
