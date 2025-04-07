@@ -88,7 +88,8 @@ class LoginScreen(MDScreen):
         is deployed."""
         super(LoginScreen, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.esc_or_backbutton)
-        self.username_input.text = "user_test"
+        # self.username_input.text = "user_test"
+        self.username_input.text = ""
         if pwd_manager_utils.add_user(
                     pwd_manager_utils.hasher("user_test", ""),
                     pwd_manager_utils.hasher("password_text", pwd_manager_utils.generate_salt().decode()),
@@ -177,23 +178,23 @@ class LoginScreen(MDScreen):
         if current_user in users:
             print(f"{username_text} exists in DB")
             password, salt = pwd_manager_utils.check_login_pwd(username_text)
-            # if pwd_manager_utils.hasher(password_text, salt) == password:
-            os.environ["pwdzmanuser"] = username_text
-            os.environ["pwdzmanpwd"] = password_text
-            current_user_env = os.environ["pwdzmanuser"]
-            if export:
-                pwd_manager_utils.backup_data_prompt()
-            elif import_backup:
-                pwd_manager_utils.show_message(Languages().msg_import_backup_title, Languages().msg_import_backup_msg)
-            else: # ID and pwd OK
-                self.make_master_list()
-                self.unbind_key()
-                self.manager.add_widget(ListScreen(name="listscreen"))
-                self.manager.current = "listscreen"
-            # else: # ID or PWD not OK
-            #     pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_wrong_user_or_pwd)
-            #     self.username_input.text = ""
-            #     self.password_input_login.text = ""
+            if pwd_manager_utils.hasher(password_text, salt) == password:
+                os.environ["pwdzmanuser"] = username_text
+                os.environ["pwdzmanpwd"] = password_text
+                current_user_env = os.environ["pwdzmanuser"]
+                if export:
+                    pwd_manager_utils.backup_data_prompt()
+                elif import_backup:
+                    pwd_manager_utils.show_message(Languages().msg_import_backup_title, Languages().msg_import_backup_msg)
+                else: # ID and pwd OK
+                    self.make_master_list()
+                    self.unbind_key()
+                    self.manager.add_widget(ListScreen(name="listscreen"))
+                    self.manager.current = "listscreen"
+            else: # ID or PWD not OK
+                pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_wrong_user_or_pwd)
+                self.username_input.text = ""
+                self.password_input_login.text = ""
 
         else:
             pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_wrong_user_or_pwd)

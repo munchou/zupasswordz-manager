@@ -30,7 +30,7 @@ source.exclude_exts = app_copy.zip, requirements.txt
 source.exclude_patterns = app_copy.zip, compile_app.py, buildozer.spec, poetry.lock, pyproject.toml, send_app_to_phone.py, .vscode, tests, _saved-files
 
 # (str) Application versioning (method 1)
-version = 0.9
+version = 0.91
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -65,7 +65,7 @@ orientation = portrait
 #
 
 #
-author = ©munchou 2024
+author = ©munchou 2025
 
 # change the major version of python used by the app
 osx.python_version = 3
@@ -78,7 +78,7 @@ osx.kivy_version = 1.9.1
 #
 
 # (bool) Indicate if the application should be fullscreen or not
-fullscreen = 0
+fullscreen = 1
 
 # (string) Presplash background color (for android toolchain)
 # Supported formats are: #RRGGBB #AARRGGBB or one of the following names:
@@ -273,8 +273,8 @@ android.minapi = 28
 
 # (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
 # In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
-android.archs = arm64-v8a
-#android.archs = arm64-v8a, armeabi-v7a
+#android.archs = arm64-v8a
+android.archs = arm64-v8a, armeabi-v7a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
@@ -296,7 +296,7 @@ android.allow_backup = True
 # android.no-compile-pyo = True
 
 # (str) The format used to package the app for release mode (aab or apk or aar).
-# android.release_artifact = aab
+android.release_artifact = aab
 
 # (str) The format used to package the app for debug mode (apk or aar).
 # android.debug_artifact = apk
@@ -313,6 +313,7 @@ android.allow_backup = True
 
 # (str) python-for-android branch to use, defaults to master
 #p4a.branch = master
+p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
 #p4a.commit = HEAD
