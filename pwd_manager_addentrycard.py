@@ -1,9 +1,11 @@
 from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
-from kivymd.uix.list import (
-    MDListItem,
-)
+from kivymd.uix.list import MDListItem
+from kivymd.uix.button import MDButton, MDIconButton
+# from kivymd.icon_definitions import md_icons
+# from kivymd.uix.screen import MDScreen
 
+from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.properties import (
     ObjectProperty,
@@ -14,7 +16,6 @@ from kivy.properties import (
 import pwd_manager_utils
 import uuid
 
-import pwd_manager_languages
 from pwd_manager_languages import Languages
 
 
@@ -23,6 +24,13 @@ class ItemBind(MDListItem):
     app_user = StringProperty(None)
     app_pwd = StringProperty(None)
     app_info = StringProperty(None)
+
+class IconsBind(MDListItem):
+    icon1 = StringProperty(None)
+    icon2 = StringProperty(None)
+    icon3 = StringProperty(None)
+    icon4 = StringProperty(None)
+    icon5 = StringProperty(None)
 
 
 class AddEntryCard(MDCard):
@@ -33,7 +41,7 @@ class AddEntryCard(MDCard):
     textfield_apppwd_hint = Languages().textfield_apppwd_hint
     textfield_apppwd_confirm_hint = Languages().textfield_apppwd_confirm_hint
     textfield_appinfo_hint = Languages().textfield_appinfo_hint
-    
+
     removed = BooleanProperty()
     button_text = Languages().btn_add_entry
 
@@ -43,6 +51,7 @@ class AddEntryCard(MDCard):
         super(AddEntryCard, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.esc_or_backbutton)
         self.removed = False
+        self.display_icons()
 
     def bind_key(self):
         print("BIND KEY ADD ENTRY")
@@ -68,6 +77,8 @@ class AddEntryCard(MDCard):
         self.clear_widgets()
 
 
+    selected_icon = ObjectProperty("")
+
     app_name_input = ObjectProperty(None)
     app_user_input = ObjectProperty(None)
     app_pwd_input = ObjectProperty(None)
@@ -78,6 +89,7 @@ class AddEntryCard(MDCard):
     app_user_update = ObjectProperty("")
     app_pwd_update = ObjectProperty("")
     app_info_update = ObjectProperty("")
+
 
     def new_entry_details(self):
         error = False
@@ -126,7 +138,7 @@ class AddEntryCard(MDCard):
                 app_user_text,
                 app_pwd_text,
                 app_info_text,
-                "app_icon",
+                self.selected_icon,
             )
             self.unbind_key()
 
@@ -202,3 +214,34 @@ class AddEntryCard(MDCard):
             key=lambda x: x.app_name.casefold(),
             reverse=True,
         )
+
+
+    def display_icons(self):
+        available_icons = ["snapchat", "cart", "bitcoin", "hand-coin", "piggy-bank", "bank", "web", "whatsapp", "skype", "ubuntu", "linux", "docker", "gmail", "email", "wifi", "microsoft", "microsoft-azure", "microsoft-edge", "microsoft-office", "microsoft-xbox", "contactless-payment-circle", "train", "car", "bicycle", "android", "apple", "apple-ios", "firefox", "google", "google-ads", "google-chrome", "google-cloud", "google-translate", "google-plus", "google-play", "google-maps", "google-hangouts", "google-drive", "google-downasaur", "google-earth", "google-", "google-", ]
+
+        icons_list = self.ids.icons_scroll
+
+        print("len(available_icons):", len(available_icons))
+        while available_icons:
+            if len(available_icons) > 3:
+                pwd_manager_utils.add_icon_list(
+                    icons_list,
+                    available_icons[0],
+                    available_icons[1],
+                    available_icons[2],
+                    available_icons[3],
+                    available_icons[4],
+                )
+                available_icons = available_icons[5:]
+            else:
+                break
+                for icon in available_icons:
+                    pwd_manager_utils.add_icon_list(icons_list, icon)
+                break
+
+
+class IconItem(MDIconButton):
+    icon = StringProperty()
+
+    def change_icon(self, new_icon):
+        AddEntryCard.selected_icon = new_icon

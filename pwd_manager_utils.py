@@ -612,6 +612,21 @@ def add_entry_list(entries_list, id, app_name, app_user, app_pwd, app_info, app_
     )
 
 
+# def add_icon_list(icons_list, available_icons):
+def add_icon_list(icons_list, icon1, icon2, icon3, icon4, icon5):
+    from pwd_manager_addentrycard import IconsBind, IconItem
+
+    icons_list.add_widget(
+        IconsBind(
+            IconItem(icon=icon1,),
+            IconItem(icon=icon2),
+            IconItem(icon=icon3),
+            IconItem(icon=icon4),
+            IconItem(icon=icon5),
+            )
+    )
+
+
 def check_login_pwd(user, filename=FILENAME):
     parser = ConfigParser()
     parser.read(filename)
