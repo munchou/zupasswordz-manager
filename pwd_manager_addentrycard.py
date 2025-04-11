@@ -217,7 +217,78 @@ class AddEntryCard(MDCard):
 
 
     def display_icons(self):
-        available_icons = ["snapchat", "cart", "bitcoin", "hand-coin", "piggy-bank", "bank", "web", "whatsapp", "skype", "ubuntu", "linux", "docker", "gmail", "email", "wifi", "microsoft", "microsoft-azure", "microsoft-edge", "microsoft-office", "microsoft-xbox", "contactless-payment-circle", "train", "car", "bicycle", "android", "apple", "apple-ios", "firefox", "google", "google-ads", "google-chrome", "google-cloud", "google-translate", "google-plus", "google-play", "google-maps", "google-hangouts", "google-drive", "google-downasaur", "google-earth", "google-", "google-", ]
+        available_icons = ["hand-coin",
+                           "piggy-bank",
+                           "bank",
+                           "contactless-payment-circle",
+                           "bitcoin", #
+
+                           "snapchat",
+                           "google-hangouts",
+                           "whatsapp",
+                           "skype",
+                           "phone-in-talk", #
+
+                           "web",
+                           "firefox",
+                           "google-chrome",
+                           "microsoft-edge",
+                           "apple-safari", #
+
+                           "wifi",
+                           "store",
+                           "cart",
+                           "food",
+                           "shopping",
+
+                           "laptop",
+                           "printer",
+                           "cellphone",
+                           "tablet",
+                           "camera", #
+
+                           "email",
+                           "gmail",
+                           "card-account-mail",
+                           "mailbox",
+                           "passport", #
+
+                           "train",
+                           "bus",
+                           "car",
+                           "bicycle",
+                           "airplane", #
+
+                           "linux",
+                           "ubuntu",
+                           "microsoft",
+                           "microsoft-azure",
+                           "microsoft-office", #
+
+                           "android",
+                           "google",
+                           "apple",
+                           "apple-ios",
+                           "docker", #
+
+                           "google-ads",
+                           "google-cloud",
+                           "google-translate",
+                           "google-plus",
+                           "google-fit", #
+
+                           "google-play",
+                           "google-maps",
+                           "google-earth",                           
+                           "google-drive",
+                           "google-downasaur", #
+
+                           "microsoft-xbox",
+                           "sony-playstation",
+                           "nintendo-switch",
+                           "television-play",
+                           "gamepad-variant", #
+                           ]
 
         icons_list = self.ids.icons_scroll
 

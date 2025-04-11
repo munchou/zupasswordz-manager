@@ -19,9 +19,9 @@ class InformationPage(MDCard):
     removed = BooleanProperty()
 
     app_title = "ZUPAsswordz"
-    app_version = "b25.04b" # 04b -> Apr. 04"
+    app_version = "v1.01" # Apr. 11, 2025
     copyright_version = "©munchou 2024-2025"
-    thanks_to = "Martin (OWDD), Snu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec, devilsof (Kivy Discord)"
+    thanks_to = "Martin (OWDD), Snu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec, devilsof (Kivy Discord).\n[u]Testers:[/u] Errietta, Surya, my amazing self."
     contact_me = "Question? Thanks? Wanna coop-dev?\ncontact@planetofthedevz.com"
     imported_text1 = Languages().msg_app_info_content1.replace(" [returnz] ", "\n")
     imported_text2 = Languages().msg_app_info_content2.replace(" [returnz] ", "\n")

@@ -15,7 +15,7 @@ textfield_password_confirm_hint = confirm password
 btn_signin = SIGN IN
 
 msg_close_app_title = Buhbye?[close_app]
-msg_close_app_content = Close the app and get back to your sad routine?
+msg_close_app_content = Close the app?
 msg_error = ERROR
 msg_wrong_user_or_pwd = username does not exist or wrong password
 msg_invalid_char_username = Invalid characters in the username
