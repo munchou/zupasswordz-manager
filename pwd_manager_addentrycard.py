@@ -154,6 +154,12 @@ class AddEntryCard(MDCard):
             return
 
         if self.button_text == Languages().btn_update_entry:
+            if self.selected_icon == "":
+                app_icon = pwd_manager_utils.get_app_icon(listscreen.selected_item)
+
+            print("\nself.selected_icon:", self.selected_icon)
+            print("app_icon:", app_icon)
+
             if app_pwd == "********":
                 print("master list pwd:", app_pwd)
                 print("listscreen.selected_item:", listscreen.selected_item)
@@ -171,8 +177,10 @@ class AddEntryCard(MDCard):
 
             if app_name != listscreen.selected_item:
                 master_list.pop(listscreen.selected_item)
+
             master_list[app_name] = [
-                app_user,
+                # app_user,
+                str(pwd_manager_utils.encrypt_data(app_user)),
                 str(pwd_manager_utils.encrypt_data(app_pwd)),
                 app_info,
                 app_icon,

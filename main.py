@@ -1,7 +1,7 @@
 """Initializes the config file befre running anything else
 as the language must be set beforehand."""
 from pwd_manager_utils import initialize_config_file
-initialize_config_file()
+initialize_config_file() # contains VERSION env variable
 
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
@@ -52,6 +52,8 @@ def unload_file():
 
 
 class LoginScreen(MDScreen):
+    app_version = os.environ.get("app_version")
+
     # text variables
     main_title = Languages().main_title
     textfield_username_hint = Languages().textfield_username_hint

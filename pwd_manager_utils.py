@@ -372,6 +372,8 @@ def check_system_language():
 
 
 def initialize_config_file(filename=FILENAME):
+    os.environ["app_version"] = "v1.03" # Apr. 12, 2025
+
     parser = ConfigParser()
     parser.read(filename)
     try:
@@ -467,6 +469,18 @@ def get_app_pwd(selected_item):
                 app_pwd = user_data[app][1]
                 break
         return app_pwd
+
+
+def get_app_icon(selected_item):
+    username = hasher(os.environ.get("pwdzmanuser"), "")
+    with open(f"{username}.json", "r") as file:
+        user_data = json.load(file)
+        for app in user_data:
+            if decrypt_data(bytes(app[2:-1], "utf-8")) == selected_item:
+                app_icon = user_data[app][3]
+                print(f"\n\t{username}'s app_icon:", app_icon)
+                break
+        return app_icon
 
 
 def add_to_json(id, app_name, app_user, app_pwd, app_info, app_icon):

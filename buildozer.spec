@@ -30,7 +30,7 @@ source.exclude_exts = app_copy.zip, requirements.txt
 source.exclude_patterns = app_copy.zip, compile_app.py, buildozer.spec, poetry.lock, pyproject.toml, send_app_to_phone.py, .vscode, tests, _saved-files
 
 # (str) Application versioning (method 1)
-version = 1.01
+version = 1.03
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -52,7 +52,7 @@ requirements = python3, kivy==2.3.0, kivy_reloader, https://github.com/kivymd/Ki
 presplash.filename = %(source.dir)s/img/zupasswordz_logo_presplash.png
 
 # (str) Icon of the application
-# icon.filename = %(source.dir)s/img/zupasswordz_logo_app.png
+icon.filename = %(source.dir)s/img/zupasswordz_logo_app.png
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait

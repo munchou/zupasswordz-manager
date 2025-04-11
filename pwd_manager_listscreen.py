@@ -139,9 +139,9 @@ class SearchBar(MDTextField):
                                 app_name = item
                                 if not app_name.casefold().startswith(input_text):
                                     continue
-                                app_user = user_data[item][0]
+                                app_user =  user_data[item][0] if user_data[item][0].startswith("b'") else str(pwd_manager_utils.encrypt_data(user_data[item][0]))
                                 app_pwd = user_data[item][1]
-                                app_info = user_data[item][2]
+                                app_info = user_data[item][2] if user_data[item][2].startswith("b'") else str(pwd_manager_utils.encrypt_data(user_data[item][2]))
                                 app_icon = user_data[item][3]
 
                                 pwd_manager_utils.add_entry_list(

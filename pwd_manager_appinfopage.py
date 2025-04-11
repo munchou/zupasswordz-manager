@@ -1,4 +1,5 @@
-from kivymd.app import MDApp
+import os
+
 from kivymd.uix.card import MDCard
 
 from kivy.core.clipboard import Clipboard
@@ -19,7 +20,8 @@ class InformationPage(MDCard):
     removed = BooleanProperty()
 
     app_title = "ZUPAsswordz"
-    app_version = "v1.01" # Apr. 11, 2025
+    app_version = os.environ.get("app_version")
+    print("app_version:", app_version)
     copyright_version = "©munchou 2024-2025"
     thanks_to = "Martin (OWDD), Snu, Cheaterman, kuzeyron, el3phanten, Hamburguesa, Novfensec, devilsof (Kivy Discord).\n[u]Testers:[/u] Errietta, Surya, my amazing self."
     contact_me = "Question? Thanks? Wanna coop-dev?\ncontact@planetofthedevz.com"
