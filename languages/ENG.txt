@@ -12,7 +12,7 @@ btn_export_data = EXPORT DATA
 label_not_registered = Create a new database
 textfield_textfield_password_register_hint = password (8 char. min.)
 textfield_password_confirm_hint = confirm password
-btn_signin = SIGN IN
+btn_signin = CREATE THE DATABASE
 
 msg_close_app_title = Buhbye?[close_app]
 msg_close_app_content = Close the app?

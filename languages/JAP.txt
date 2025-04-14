@@ -9,10 +9,10 @@ textfield_username_hint = ウーザー名
 textfield_password_login_hint = パスワード
 btn_login = ログイン
 btn_export_data = エクスポートする
-label_not_registered = アカウントを持っていない？こちらへ！
+label_not_registered = データベースを追加する
 textfield_textfield_password_register_hint = パスワード（8文字以上）
 textfield_password_confirm_hint = パスワードを認証する
-btn_signin = サインイン
+btn_signin = データベースを作成する
 
 msg_close_app_title = バイバァァァイ[close_app]
 msg_close_app_content = アプリを閉じますか？

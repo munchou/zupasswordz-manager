@@ -205,9 +205,9 @@ class ListScreen(MDScreen):
                     icon="open-in-new",
                     icon_color=MDApp.get_running_app().theme_cls.listscreenTopAppBarIconColor,
                     on_release=lambda x: (self.appdetailspage(self.selected_item,
-                                                              pwd_manager_utils.decrypt_data(bytes(current_item.app_user[2:-1], "utf-8")),
+                                                              pwd_manager_utils.decrypt_data(bytes(current_item.app_user[2:-1], "utf-8")) if current_item.app_user.startswith("b'") else current_item.app_user,
                                                               pwd_manager_utils.decrypt_data(bytes(current_item.app_pwd[2:-1], "utf-8")),
-                                                              pwd_manager_utils.decrypt_data(bytes(current_item.app_info[2:-1], "utf-8")),
+                                                              pwd_manager_utils.decrypt_data(bytes(current_item.app_info[2:-1], "utf-8")) if current_item.app_info.startswith("b'") else current_item.app_info,
                                                               )),
                 ),
                 BottomAppBarButton(

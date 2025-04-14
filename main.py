@@ -91,17 +91,17 @@ class LoginScreen(MDScreen):
         super(LoginScreen, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.esc_or_backbutton)
         # self.username_input.text = "user_test"
-        self.username_input.text = ""
-        if pwd_manager_utils.add_user(
-                    pwd_manager_utils.hasher("user_test", ""),
-                    pwd_manager_utils.hasher("password_text", pwd_manager_utils.generate_salt().decode()),
-                    pwd_manager_utils.generate_salt().decode(),
-                    pwd_manager_utils.hasher(self.device_id, pwd_manager_utils.generate_salt().decode()),
-                    self.config_filename,
-                 ) == "user_exists":
-            print("user_test already created")
-        else:
-            print("user_test created")
+        self.username_input.text = pwd_manager_utils.get_last_connected_user()
+        # if pwd_manager_utils.add_user(
+        #             pwd_manager_utils.hasher("user_test", ""),
+        #             pwd_manager_utils.hasher("password_text", pwd_manager_utils.generate_salt().decode()),
+        #             pwd_manager_utils.generate_salt().decode(),
+        #             pwd_manager_utils.hasher(self.device_id, pwd_manager_utils.generate_salt().decode()),
+        #             self.config_filename,
+        #          ) == "user_exists":
+        #     print("user_test already created")
+        # else:
+        #     print("user_test created")
 
 
     def bind_key(self):
@@ -183,7 +183,7 @@ class LoginScreen(MDScreen):
             if pwd_manager_utils.hasher(password_text, salt) == password:
                 os.environ["pwdzmanuser"] = username_text
                 os.environ["pwdzmanpwd"] = password_text
-                current_user_env = os.environ["pwdzmanuser"]
+                pwd_manager_utils.update_last_user(username_text)
                 if export:
                     pwd_manager_utils.backup_data_prompt()
                 elif import_backup:

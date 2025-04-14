@@ -372,7 +372,7 @@ def check_system_language():
 
 
 def initialize_config_file(filename=FILENAME):
-    os.environ["app_version"] = "v1.03" # Apr. 12, 2025
+    os.environ["app_version"] = "v1.05" # April 13, 2025
 
     parser = ConfigParser()
     parser.read(filename)
@@ -392,6 +392,14 @@ def initialize_config_file(filename=FILENAME):
             parser.write(configfile)
     except configparser.DuplicateSectionError:
         print("theme section already exists")
+        pass
+    try:
+        parser.add_section("last_connected_user")
+        parser.set("last_connected_user", "last_username", "")
+        with open(filename, "w") as configfile:
+            parser.write(configfile)
+    except configparser.DuplicateSectionError:
+        print("last_connected_user section already exists")
         pass   
 
 
@@ -407,6 +415,14 @@ def update_theme(theme, filename=FILENAME):
     parser = ConfigParser()
     parser.read(filename)
     parser.set("theme", "theme-colors", theme)
+    with open(filename, "w") as configfile:
+        parser.write(configfile)
+
+
+def update_last_user(username, filename=FILENAME):
+    parser = ConfigParser()
+    parser.read(filename)
+    parser.set("last_connected_user", "last_username", username)
     with open(filename, "w") as configfile:
         parser.write(configfile)
 
@@ -648,6 +664,14 @@ def check_login_pwd(user, filename=FILENAME):
     password = params[0][1]
     salt = params[1][1]
     return password, salt
+
+
+def get_last_connected_user(filename=FILENAME):
+    parser = ConfigParser()
+    parser.read(filename)
+    params = parser.items("last_connected_user")
+    username = params[0][1]
+    return username
 
 
 def load_config_info(filename=FILENAME):
