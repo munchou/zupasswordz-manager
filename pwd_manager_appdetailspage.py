@@ -21,17 +21,19 @@ class AppDetailsPage(MDCard):
     selected_item = StringProperty()
     app_user = StringProperty()
     app_pwd = StringProperty()
+    app_icon = StringProperty()
     app_info = StringProperty()
     pwd_display = StringProperty("********")
 
     removed = BooleanProperty()
 
     
-    def __init__(self, selected_item, app_user, app_pwd, app_info, **kwargs):
+    def __init__(self, selected_item, app_user, app_pwd, app_icon, app_info, **kwargs):
         super(AppDetailsPage, self).__init__(**kwargs)
         self.selected_item = selected_item
         self.app_user = app_user
         self.app_pwd = app_pwd
+        self.app_icon = app_icon
         self.app_info = app_info
         Window.bind(on_keyboard=self.esc_or_backbutton)
         self.removed = False

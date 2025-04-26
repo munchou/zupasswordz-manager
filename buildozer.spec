@@ -30,7 +30,7 @@ source.exclude_exts = app_copy.zip, requirements.txt
 source.exclude_patterns = app_copy.zip, compile_app.py, buildozer.spec, poetry.lock, pyproject.toml, send_app_to_phone.py, .vscode, tests, _saved-files
 
 # (str) Application versioning (method 1)
-version = 1.05
+version = 1.10
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]

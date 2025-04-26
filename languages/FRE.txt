@@ -78,6 +78,7 @@ entry_title_update = MODIFIER UNE ENTREE
 entry_title_add = AJOUT D'UNE ENTREE
 btn_add_entry = AJOUTER
 btn_update_entry = MODIFIER
+selected_icon = Icône sélectionnée:
 textfield_appname_hint = nom de l'app/du site
 textfield_appuser_hint = nom d'utilisateur/e-mail
 textfield_apppwd_hint = mot de passe (8 car. min.)
@@ -110,3 +111,12 @@ btn_ok = OK
 btn_cancel = ANNULER
 msg_appname_exists = existe déjà. Modifier le nom en sélectionnant l'app et en cliquant sur le crayon mignon.
 msg_appname_used = exist déjà, veuillez choisir un autre nom d'app.
+
+
+# DELETE DATABASE PAGE
+remove_db_title = SUPPRIMER UNE BDD
+msg_remove_db_title = /!\ AVERTISSMENT /!\[database]
+msg_remove_db_content = Vous êtes sur le point de supprimer cette base de données. Pas de retour en arrière possible !
+msg_db_removed_title = NON, RIEN DE RIEN
+msg_db_removed_content = La base de données a bien été supprimée
+btn_remove_db = CONFIRMER SUPPRESSION

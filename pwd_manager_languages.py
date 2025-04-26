@@ -1,6 +1,8 @@
-import configparser
+from os.path import exists
 from configparser import ConfigParser
 from pwd_manager_utils import show_message
+
+FILENAME = "../config.ini"
 
 
 """Languages file (up to 6 languages)
@@ -11,32 +13,38 @@ dictionary "LANG_CODE": "text" where "LANG_CODE" is the code you want to use
 (check Wikipedia if you want the international codes) and "text" the translation
 you wish to use.
 
-Current 6 languages and their code:
+Languages and their code:
 - English: ENG
 - French: FRE
-- Japanese: JAP
 - Italian: ITA
 - Spanish: SPA
+- German: GER
+- Polish: POL
+- Finnish: FIN
+- Norwegian: NOR
+- Swedish: SWE
 - Vietnamese: VN
+- Japanese: JAP
 
 !!! ATTENTION !!!
 Some languages use a lot of characters, and your translations may end up too long. Please adapt accordingly so that it fits the text boxes, buttons, etc.
 """
 
-available_languages = ["ENG", "FRE", "JAP", "ITA", "SPA", "VN"]
+# available_languages = ["ENG", "FRE", "JAP", "ITA", "SPA", "VN"]
 
-def load_language(filename="config.ini"):
+def load_language(filename=FILENAME):
     parser = ConfigParser()
     parser.read(filename)
     params = parser.items("language")
     theme = params[0][1]
     return theme
 
-def update_language(new_language, filename="config.ini"):
+def update_language(new_language, filename=FILENAME):
     parser = ConfigParser()
     parser.read(filename)
     current_language = parser.items("language")[0][1]
-    if new_language not in available_languages:
+    if not exists(f"languages/{new_language}.txt"):
+        lang_not_avail()
         return print("The selected language in not a valid language!")
     elif new_language != current_language:
         print("Language changed to", new_language)
@@ -47,6 +55,9 @@ def update_language(new_language, filename="config.ini"):
         show_message(parser[new_language]["msg_language_changed_title"], parser[new_language]["msg_theme_changed_content"])
     else:
         print("Selected language is already set:", current_language)
+
+def lang_not_avail():
+    show_message("ALL UR BASES R BELONG 2 US", "Oh no, it seems that language is in another castle!")
 
 def load_lang_file(language, var_name):
     parser = ConfigParser()
@@ -95,6 +106,8 @@ class Languages:
     
     btn_add_entry = load_lang_file(set_lang, "btn_add_entry")
     btn_update_entry = load_lang_file(set_lang, "btn_update_entry")
+
+    selected_icon = load_lang_file(set_lang, "selected_icon")
     
     textfield_appname_hint = load_lang_file(set_lang, "textfield_appname_hint")
     textfield_appuser_hint = load_lang_file(set_lang, "textfield_appuser_hint")
@@ -173,6 +186,15 @@ class Languages:
     btn_cancel = load_lang_file(set_lang, "btn_cancel")
     msg_appname_exists = load_lang_file(set_lang, "msg_appname_exists")
     msg_appname_used = load_lang_file(set_lang, "msg_appname_used")
+
+
+        # DELETE DATABASE PAGE
+    remove_db_title = load_lang_file(set_lang, "remove_db_title")
+    msg_remove_db_title = load_lang_file(set_lang, "msg_remove_db_title")
+    msg_remove_db_content = load_lang_file(set_lang, "msg_remove_db_content")
+    msg_db_removed_title = load_lang_file(set_lang, "msg_db_removed_title")
+    msg_db_removed_content = load_lang_file(set_lang, "msg_db_removed_content")
+    btn_remove_db = load_lang_file(set_lang, "btn_remove_db")
 
 
     # = load_lang_file(set_lang, "")

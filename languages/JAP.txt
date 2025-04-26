@@ -81,6 +81,7 @@ entry_title_update = エントリを更新する
 entry_title_add = エントリを追加する
 btn_add_entry = 追加する
 btn_update_entry = 更新する
+selected_icon = 選択されたアイコン:
 textfield_appname_hint = アプリケーションの名前
 textfield_appuser_hint = ユーザー名 / メールアドレス
 textfield_apppwd_hint = パスワード
@@ -113,3 +114,12 @@ btn_ok = OK
 btn_cancel = キャンセル
 msg_appname_exists = はすでに追加されています。リストで選択して小さな鉛筆をクリックして更新してください。
 msg_appname_used = はすでに使用されています。別の名前を選択してください。
+
+
+# DELETE DATABASE PAGE
+remove_db_title = データベースを削除
+msg_remove_db_title = /!\ 警告 /!\[database]
+msg_remove_db_content = データベースを削除しようとしています。元に戻すことはできません!
+msg_db_removed_title = 何も残っていません
+msg_db_removed_content = データベースは正常に削除されました
+btn_remove_db = 削除を確認

@@ -49,5 +49,5 @@ class SettingsPage(MDCard):
             pwd_manager_utils.show_message(Languages().msg_theme_changed_title, Languages().msg_theme_changed_content)
     
 
-    def lang_not_avail(self):
-        pwd_manager_utils.show_message("ALL UR BASES R BELONG 2 US", "Oh no, it seems that language is in another castle!")
+    # def lang_not_avail(self):
+    #     pwd_manager_utils.show_message("ALL UR BASES R BELONG 2 US", "Oh no, it seems that language is in another castle!")

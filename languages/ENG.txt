@@ -79,6 +79,7 @@ entry_title_update = UPDATE AN ENTRY
 entry_title_add = ADD AN ENTRY
 btn_add_entry = ADD ENTRY
 btn_update_entry = UPDATE
+selected_icon = Selected icon:
 textfield_appname_hint = name of the app/website
 textfield_appuser_hint = username/e-mail
 textfield_apppwd_hint = password (8 char. min.)
@@ -111,3 +112,12 @@ btn_ok = OK
 btn_cancel = CANCEL
 msg_appname_exists = has already been added. Please update it by selecting it in your list and then clicking the little pencil.
 msg_appname_used = is already in use, please choose another name.
+
+
+# DELETE DATABASE PAGE
+remove_db_title = REMOVE A DATABASE
+msg_remove_db_title = /!\ WARNING /!\[database]
+msg_remove_db_content = You are about to remove that database. This cannot be undone!
+msg_db_removed_title = NOT ONE BIT LEFT
+msg_db_removed_content = The database was successfully removed
+btn_remove_db = CONFIRM DELETION

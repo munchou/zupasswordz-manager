@@ -40,7 +40,7 @@ if kv_platform == "android":
     from android import api_version
 
 
-FILENAME = "config.ini"
+FILENAME = "../config.ini"
 
 def word_length(letters, word):
     # Jap char width: average 16
@@ -179,6 +179,7 @@ def show_message(title, message):
     backup = False
     close_app = False
     import_backup = False
+    remove_database = False
 
     if "[backup]" in title:
         title = title.replace("[backup]", "")
@@ -191,6 +192,10 @@ def show_message(title, message):
     elif "[import]" in title:
         title = title.replace("[import]", "")
         import_backup = True
+
+    elif "[database]" in title:
+        title = title.replace("[database]", "")
+        remove_database = True
 
     btn_ok = Button(
         text=Languages().btn_confirm_backup if backup else Languages().btn_close_app if close_app else Languages().btn_ok,
@@ -268,6 +273,11 @@ def show_message(title, message):
         update_btns_layout.add_widget(btn_close)
         layout.add_widget(pwdinput)
         layout.add_widget(update_btns_layout)
+    
+    elif remove_database:
+        update_btns_layout.add_widget(btn_ok)
+        update_btns_layout.add_widget(btn_close)
+        layout.add_widget(update_btns_layout)
 
     elif close_app:
         update_btns_layout.add_widget(btn_ok)
@@ -277,7 +287,7 @@ def show_message(title, message):
     else:
         layout.add_widget(btn_ok)
 
-    print("Screen resolution_width:", resolution_width, "POPUP:", resolution_width-20)
+    # print("Screen resolution_width:", resolution_width, "POPUP:", resolution_width-20)
     # print("number of lines:", height)
           
     import pwd_manager_languages
@@ -315,6 +325,10 @@ def show_message(title, message):
     if import_backup:
         username = os.environ.get("pwdzmanuser")
         btn_ok.bind(on_release=lambda x: import_backup_pwd(username, pwdinput.text))
+    
+    if remove_database:
+        from pwd_manager_removedbpage import RemoveDatabasePage
+        btn_ok.bind(on_release=lambda x: RemoveDatabasePage().removal_confirmed())
     
     if close_app:
         btn_ok.bind(on_release=lambda x: exit())
@@ -372,7 +386,7 @@ def check_system_language():
 
 
 def initialize_config_file(filename=FILENAME):
-    os.environ["app_version"] = "v1.05" # April 13, 2025
+    os.environ["app_version"] = "v1.10" # April 26, 2025
 
     parser = ConfigParser()
     parser.read(filename)
@@ -454,12 +468,28 @@ def add_user(
         parser.write(configfile)
 
 
+def remove_user(username, filename=FILENAME,):
+    """Update the config INI file by removing the target user
+    section when removing a database."""
+
+    parser = ConfigParser()
+    parser.read(filename)
+    try:
+        parser.remove_section(username)
+        print(f"Section {username} successfully removed from CONFIG file")
+    except Exception as e:
+        print("A problem occurred when trying to remove the user section in the config file.", e)
+
+    with open(filename, "w") as configfile:
+        parser.write(configfile)
+
+
 def app_name_exists(app_name, button_text, listscreen):
     from pwd_manager_languages import Languages
     username = hasher(os.environ.get("pwdzmanuser"), "")
-    with open(f"{username}.json", "r") as file:
+    with open(f"../{username}.json", "r") as file:
         user_data = json.load(file)
-        apps_names = [decrypt_data(bytes(item[2:-1], "utf-8")) for item in user_data]
+        apps_names = [item for item in user_data]
         print("apps_names:", apps_names)
         if app_name in apps_names and button_text != Languages().btn_update_entry:
             show_message(Languages().msg_error, f"{app_name} {Languages().msg_appname_exists}")
@@ -474,12 +504,12 @@ def app_name_exists(app_name, button_text, listscreen):
 
 def get_app_pwd(selected_item):
     username = hasher(os.environ.get("pwdzmanuser"), "")
-    with open(f"{username}.json", "r") as file:
+    with open(f"../{username}.json", "r") as file:
         user_data = json.load(file)
         for app in user_data:
             # print("app:", app)
             # print(user_data[app][1])
-            if decrypt_data(bytes(app[2:-1], "utf-8")) == selected_item:
+            if app == selected_item:
                 # print("Item found:", app, selected_item)
                 # print(decrypt_data(bytes(user_data[app][1][2:-1], "utf-8")))
                 app_pwd = user_data[app][1]
@@ -489,10 +519,10 @@ def get_app_pwd(selected_item):
 
 def get_app_icon(selected_item):
     username = hasher(os.environ.get("pwdzmanuser"), "")
-    with open(f"{username}.json", "r") as file:
+    with open(f"../{username}.json", "r") as file:
         user_data = json.load(file)
         for app in user_data:
-            if decrypt_data(bytes(app[2:-1], "utf-8")) == selected_item:
+            if app == selected_item:
                 app_icon = user_data[app][3]
                 print(f"\n\t{username}'s app_icon:", app_icon)
                 break
@@ -502,12 +532,12 @@ def get_app_icon(selected_item):
 def add_to_json(id, app_name, app_user, app_pwd, app_info, app_icon):
     username = hasher(os.environ.get("pwdzmanuser"), "")
 
-    if not exists(f"{username}.json"):
+    if not exists(f"../{username}.json"):
         print("JSON doesn't exist, creating it...")
-        with open(f"{username}.json", "w") as file:
+        with open(f"../{username}.json", "w") as file:
             json.dump(
                 {
-                    str(encrypt_data(app_name)): [
+                    app_name: [
                         str(encrypt_data(app_user)),
                         str(encrypt_data(app_pwd)),
                         str(encrypt_data(app_info)),
@@ -520,11 +550,11 @@ def add_to_json(id, app_name, app_user, app_pwd, app_info, app_icon):
             )
 
     else:
-        with open(f"{username}.json", "r") as file:
+        with open(f"../{username}.json", "r") as file:
             user_data = json.load(file)
             user_data.update(
                 {
-                    str(encrypt_data(app_name)): [
+                    app_name: [
                         str(encrypt_data(app_user)),
                         str(encrypt_data(app_pwd)),
                         str(encrypt_data(app_info)),
@@ -533,7 +563,7 @@ def add_to_json(id, app_name, app_user, app_pwd, app_info, app_icon):
                     ]
                 }
             )
-        with open(f"{username}.json", "w") as file:
+        with open(f"../{username}.json", "w") as file:
             json.dump(user_data, file, indent=4)
 
 
@@ -541,12 +571,12 @@ def load_user_json():
     try:
         username = hasher(os.environ.get("pwdzmanuser"), "")
 
-        if not exists(f"{username}.json"):
+        if not exists(f"../{username}.json"):
             print("JSON doesn't exist, creating it...")
-            with open(f"{username}.json", "w") as file:
+            with open(f"../{username}.json", "w") as file:
                 json.dump({}, file)
 
-        with open(f"{username}.json", "r") as file:
+        with open(f"../{username}.json", "r") as file:
             user_data = json.load(file)
             return user_data
     except:
@@ -570,7 +600,7 @@ def update_json(listscreen, id, app_name, app_user, app_pwd, app_info, app_icon)
             entry_index = entries_list.children.index(current_item)
             break
 
-    with open(f"{username}.json", "r") as file:
+    with open(f"../{username}.json", "r") as file:
         user_data = json.load(file)
 
         for item in user_data:
@@ -585,7 +615,7 @@ def update_json(listscreen, id, app_name, app_user, app_pwd, app_info, app_icon)
         # print("UTILS UPDATE_JSON app_pwd:", app_pwd)
         user_data.update(
             {
-                str(encrypt_data(app_name)): [
+                app_name: [
                     str(encrypt_data(app_user)),
                     str(encrypt_data(app_pwd)),
                     str(encrypt_data(app_info)),
@@ -594,27 +624,21 @@ def update_json(listscreen, id, app_name, app_user, app_pwd, app_info, app_icon)
                 ]
             }
         )
-        # print("\nUPDATED:", str(encrypt_data(app_name)),
-        #     str(encrypt_data(app_user)),
-        #     str(encrypt_data(app_pwd)),
-        #     str(encrypt_data(app_info)))
-        
-        # print("CURRENT ITEM:", current_item, "Index:", entry_index)
 
-    with open(f"{username}.json", "w") as file:
+    with open(f"../{username}.json", "w") as file:
         json.dump(user_data, file, indent=4)
 
 
 def remove_entry_json(selected_item, current_item):
     username = hasher(os.environ.get("pwdzmanuser"), "")
-    with open(f"{username}.json", "r") as file:
+    with open(f"../{username}.json", "r") as file:
         user_data = json.load(file)
         for item in user_data:
             if user_data[item][4] == current_item.id:
                 user_data.pop(item)
                 break
         # user_data.pop(selected_item)
-        with open(f"{username}.json", "w") as file:
+        with open(f"../{username}.json", "w") as file:
             json.dump(user_data, file, indent=4)
 
 
@@ -637,6 +661,7 @@ def add_entry_list(entries_list, id, app_name, app_user, app_pwd, app_info, app_
             app_name=app_name,
             app_user=app_user,
             app_pwd=app_pwd,
+            app_icon=app_icon,
             app_info=app_info,
         ),
     )
@@ -648,7 +673,7 @@ def add_icon_list(icons_list, icon1, icon2, icon3, icon4, icon5):
 
     icons_list.add_widget(
         IconsBind(
-            IconItem(icon=icon1,),
+            IconItem(icon=icon1),
             IconItem(icon=icon2),
             IconItem(icon=icon3),
             IconItem(icon=icon4),
@@ -794,12 +819,12 @@ def data_backup(password, status, imported_file):
         try:
             decrypted_backup = "ORDER: [app name;;; username/e-mail;;; password;;; info (if any);;; app icon;;; id]\n"
 
-            with open(f"{user_hashed}.json", "r") as file:
+            with open(f"../{user_hashed}.json", "r") as file:
                 user_data = json.load(file)
 
             for item in user_data:
                 id = user_data[item][4]
-                app_name = decrypt_data(bytes(item[2:-1], "utf-8"))
+                app_name = item
                 app_user = decrypt_data(bytes(user_data[item][0][2:-1], "utf-8"))
                 app_pwd = decrypt_data(bytes(user_data[item][1][2:-1], "utf-8"))
                 app_info = decrypt_data(bytes(user_data[item][2][2:-1], "utf-8"))
@@ -951,7 +976,7 @@ class AndroidGetFile:
         user_data = load_user_json()
         for item in user_data:
             id = user_data[item][4]
-            app_name = decrypt_data(bytes(item[2:-1], "utf-8"))
+            app_name = item
             # print("app_name", app_name, id)
 
             available_apps.append(app_name)

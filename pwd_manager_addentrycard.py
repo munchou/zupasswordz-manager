@@ -24,6 +24,8 @@ class ItemBind(MDListItem):
     app_user = StringProperty(None)
     app_pwd = StringProperty(None)
     app_info = StringProperty(None)
+    app_icon = StringProperty(None)
+
 
 class IconsBind(MDListItem):
     icon1 = StringProperty(None)
@@ -79,6 +81,8 @@ class AddEntryCard(MDCard):
 
     selected_icon = ObjectProperty("")
 
+    text1 = StringProperty("")
+
     app_name_input = ObjectProperty(None)
     app_user_input = ObjectProperty(None)
     app_pwd_input = ObjectProperty(None)
@@ -121,8 +125,6 @@ class AddEntryCard(MDCard):
             elif app_pwd_text != app_pwd_confirm_text:
                 pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_passwords_nomatch)
                 error = True
-            # elif app_pwd_text == "********":
-            #     app_pwd_text = decrypt_data(bytes(current_item.app_pwd[2:-1], "utf-8"))
         else:
             pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_password_charnum)
             error = True
@@ -208,7 +210,6 @@ class AddEntryCard(MDCard):
                     entry_index = entries_list.children.index(child)
                     break
             entries_list.remove_widget(entries_list.children[entry_index])
-
 
         listscreen.bottom_bar_change(False)
         listscreen.reset_selected()
@@ -314,13 +315,11 @@ class AddEntryCard(MDCard):
                 available_icons = available_icons[5:]
             else:
                 break
-                for icon in available_icons:
-                    pwd_manager_utils.add_icon_list(icons_list, icon)
-                break
 
 
 class IconItem(MDIconButton):
     icon = StringProperty()
+    previous_icon = ObjectProperty(None)
 
     def change_icon(self, new_icon):
         AddEntryCard.selected_icon = new_icon

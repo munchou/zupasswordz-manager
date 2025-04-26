@@ -23,6 +23,7 @@ import pwd_manager_languages
 from pwd_manager_listscreen import ListScreen
 from pwd_manager_appinfopage import InformationPage
 from pwd_manager_settingspage import SettingsPage
+from pwd_manager_removedbpage import RemoveDatabasePage
 from pwd_manager_languages import Languages
 
 # Galazy 22 resolution: 1080*2340
@@ -70,14 +71,15 @@ class LoginScreen(MDScreen):
     username_input_reg = ObjectProperty(None)
     password_input_reg = ObjectProperty(None)
     password_input_confirm = ObjectProperty(None)
+    database_page = None
     new_entry = None
 
     device_id = plyer.uniqueid.id
     new_data = None
     file = None
     file_exists = None
-    path = "log.json"
-    config_filename = "config.ini"
+    # path = "log.json"
+    config_filename = "../config.ini"
     input_color = 0, 0.2, 0, 0.5
     btn_color = 0.2, 0, 0, 1
     white = 1, 1, 1, 0.5
@@ -90,7 +92,6 @@ class LoginScreen(MDScreen):
         is deployed."""
         super(LoginScreen, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.esc_or_backbutton)
-        # self.username_input.text = "user_test"
         self.username_input.text = pwd_manager_utils.get_last_connected_user()
         # if pwd_manager_utils.add_user(
         #             pwd_manager_utils.hasher("user_test", ""),
@@ -147,7 +148,7 @@ class LoginScreen(MDScreen):
         print("MAKING MASTER LIST")
         for item in user_data:
             id = user_data[item][4]
-            app_name = pwd_manager_utils.decrypt_data(bytes(item[2:-1], "utf-8"))
+            app_name = item
             app_user = user_data[item][0]
             app_pwd = user_data[item][1]
             app_info = user_data[item][2]
@@ -177,6 +178,18 @@ class LoginScreen(MDScreen):
         current_user = pwd_manager_utils.hasher(username_text, "")
         password_text = self.password_input_login.text
         users = pwd_manager_utils.list_users(username_text, password_text)
+
+        if username_text == "admin" and password_text == "admin":
+            db_list = ""
+            db_count = 0
+            for file in os.listdir("../"):
+                if file.endswith(".json"):
+                    db_count += 1
+                    if len(file) > 30:
+                        db_list += f"- {file[:31]}\n{file[34:]}\n"
+            pwd_manager_utils.show_message(f"CURRENT DATABASES: {db_count}", f"{db_list}")
+            return
+
         if current_user in users:
             print(f"{username_text} exists in DB")
             password, salt = pwd_manager_utils.check_login_pwd(username_text)
@@ -195,12 +208,12 @@ class LoginScreen(MDScreen):
                     self.manager.current = "listscreen"
             else: # ID or PWD not OK
                 pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_wrong_user_or_pwd)
-                self.username_input.text = ""
+                self.username_input.text = pwd_manager_utils.get_last_connected_user()
                 self.password_input_login.text = ""
 
         else:
             pwd_manager_utils.show_message(Languages().msg_error, Languages().msg_wrong_user_or_pwd)
-            self.username_input.text = ""
+            self.username_input.text = pwd_manager_utils.get_last_connected_user()
             self.password_input_login.text = ""
 
     def new_user(self):
@@ -245,7 +258,8 @@ class LoginScreen(MDScreen):
         self.username_input_reg.text = ""
         self.password_input_reg.text = ""
         self.password_input_confirm.text = ""
-    
+
+
     def settingspage(self):
         """Adds the settings page (widget) to the login screen."""
         self.new_entry = SettingsPage(md_bg_color=(1, 1, 1, 0.9))
@@ -262,8 +276,17 @@ class LoginScreen(MDScreen):
     def close_page(self):
         """Removes the backup data page (widget) that was added
         to the login screen"""
-        self.remove_widget(self.new_entry)
-        self.new_entry = None
+        if self.database_page != None:
+            self.remove_widget(self.database_page)
+            self.database_page = None
+        else:
+            self.remove_widget(self.new_entry)
+            self.new_entry = None
+
+    def remove_database(self):
+        self.database_page = RemoveDatabasePage(md_bg_color=(1, 1, 1, 0.9))
+        self.add_widget(self.database_page)
+
 
 
 class PassManagerApp(MDApp):
