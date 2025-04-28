@@ -5,6 +5,7 @@ from kivy.core.window import Window
 from kivy.properties import ObjectProperty, BooleanProperty
 
 from pwd_manager_utils import data_backup, show_message, check_input
+import os
 import pwd_manager_languages
 from pwd_manager_languages import Languages
 set_lang = pwd_manager_languages.set_lang
@@ -18,6 +19,7 @@ class BackupSavePage(MDCard):
     backup_title = Languages().backup_title
     btn_backup = Languages().btn_backup
 
+    backup_user_pwd = ObjectProperty(None)
     backup_filepwd_input = ObjectProperty(None)
     backup_filepwd_confirm = ObjectProperty(None)
 
@@ -44,21 +46,27 @@ class BackupSavePage(MDCard):
             
     def backup_data(self):
         goto_backup = False
+        user_pwd = self.backup_user_pwd.text
         password = self.backup_filepwd_input.text
         password_confirm = self.backup_filepwd_confirm.text
 
-        if len(password) >= 8:
-            if not check_input(password):
-                show_message(Languages().msg_error, Languages().msg_invalid_char_password)
-            elif password != password_confirm:
-                show_message(Languages().msg_error, Languages().msg_passwords_nomatch)
-            else:
-                goto_backup = True
-        else:
-            show_message(Languages().msg_error, Languages().msg_password_charnum)
+        if not user_pwd == os.environ.get("pwdzmanpwd"):
+            show_message(Languages().msg_error, Languages().msg_wrong_user_or_pwd)
+            return
 
-        if goto_backup:
-            data_backup(password, "backup", "")
-            self.backup_filepwd_input.text = ""
-            self.backup_filepwd_confirm.text = ""
+        else:
+            if len(password) >= 8:
+                if not check_input(password):
+                    show_message(Languages().msg_error, Languages().msg_invalid_char_password)
+                elif password != password_confirm:
+                    show_message(Languages().msg_error, Languages().msg_passwords_nomatch)
+                else:
+                    goto_backup = True
+            else:
+                show_message(Languages().msg_error, Languages().msg_password_charnum)
+
+            if goto_backup:
+                data_backup(password, "backup", "")
+                self.backup_filepwd_input.text = ""
+                self.backup_filepwd_confirm.text = ""
     

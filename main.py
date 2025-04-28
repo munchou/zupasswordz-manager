@@ -7,16 +7,18 @@ from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.screenmanager import ScreenManager
 
+from kivy.event import EventDispatcher
 from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy.utils import platform as kv_platform
 from kivy.uix.screenmanager import ScreenManager
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.clock import mainthread
 from kivy.config import Config
 from kivy.resources import resource_add_path
 
 import os, plyer
+from datetime import datetime
 
 import pwd_manager_utils
 import pwd_manager_languages
@@ -50,6 +52,36 @@ def unload_file():
     from kivy.lang.builder import BuilderBase
 
     BuilderBase().unload_file("passmanager.kv")
+
+
+class WindowState(EventDispatcher):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(on_minimize=self._on_minimize, on_restore=self._on_restore)
+    
+    minimize_time = ObjectProperty("")
+    restore_time = ObjectProperty("")
+
+
+    def _on_minimize(self, *args):
+        self.minimize_time = datetime.now().timestamp()
+        # MDApp.get_running_app().stop()
+
+
+    def _on_restore(self, *args):
+        self.restore_time = datetime.now().timestamp()
+        print("self.restore_time:", self.restore_time, "self.minimize_time:", self.minimize_time)
+        print("DIFFERENCE:", self.restore_time - self.minimize_time)
+        if self.restore_time - self.minimize_time > 1:
+            current_screen = MDApp.get_running_app().screenmanager.current
+
+            if current_screen != "loginscreen":
+                pwd_manager_utils.show_message(Languages().msg_timeout_title, Languages().msg_timeout_content)
+                MDApp.get_running_app().screenmanager.get_screen(current_screen).clear_widgets()
+                MDApp.get_running_app().screenmanager.remove_widget(MDApp.get_running_app().screenmanager.get_screen(current_screen))
+                LoginScreen().master_list = {}
+
+        
 
 
 class LoginScreen(MDScreen):
@@ -93,16 +125,6 @@ class LoginScreen(MDScreen):
         super(LoginScreen, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.esc_or_backbutton)
         self.username_input.text = pwd_manager_utils.get_last_connected_user()
-        # if pwd_manager_utils.add_user(
-        #             pwd_manager_utils.hasher("user_test", ""),
-        #             pwd_manager_utils.hasher("password_text", pwd_manager_utils.generate_salt().decode()),
-        #             pwd_manager_utils.generate_salt().decode(),
-        #             pwd_manager_utils.hasher(self.device_id, pwd_manager_utils.generate_salt().decode()),
-        #             self.config_filename,
-        #          ) == "user_exists":
-        #     print("user_test already created")
-        # else:
-        #     print("user_test created")
 
 
     def bind_key(self):
@@ -295,8 +317,7 @@ class PassManagerApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         Builder.load_file("zupasswordz.kv")
-        # with open("zupasswordz.kv", "r", encoding="utf-8") as kivy_file:
-        #     Builder.load_string(kivy_file.read())
+        self.window_state = WindowState()
 
     def build(self):
         from kivy.core.text import LabelBase, DEFAULT_FONT

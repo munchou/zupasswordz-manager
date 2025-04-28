@@ -26,6 +26,9 @@ msg_username_used = That username is already used. Please choose another one.
 msg_registration_ok_title = Banzai!
 msg_registration_ok_content = You can now log in with the username and password you just registered \o/
 
+msg_timeout_title = TIME FLIES
+msg_timeout_content = For your data's safety, you were logged out as you stayed too long without using the app.
+
 msg_app_info_content1 = [u]1. General stuff[/u] [returnz] [u]2. Privacy policy[/u] [returnz] [u]3. Data safety/security[/u] [returnz]  [returnz] [u]1. General stuff[/u] [returnz] Tools of the trade: [returnz] - Python 3.10.2 [returnz] - Kivy 2.3.0 [returnz] - Kivy MD 2.0.1 (dev0). [returnz] And love. And time. And tears of blood... [returnz] The code is Open Source, feel free to study it, improve the app or reuse part of it (reselling is forbidden). [returnz] github.com/munchou/zupasswordz-manager [returnz]  [returnz] Commercial use in any way is NOT allowed. [returnz]  [returnz] Special thanks to:
 
 msg_app_info_content2 = [u]2. Privacy policy[/u] [returnz] This is a fully OFFLINE application (yea, it still exists in 2025). None of your data is collected, there is no third party nor server connection whatsoever. If you ever notice the app trying to access the internet, stop using it and contact me as soon as you can. [returnz]  [returnz] [u]3. Data safety/security[/u] [returnz] Your data is completely encrypted locally on your device, and the encrypting/decrypting key is dependent on that device. The main advantage is that if your database were to ever be stolen as well as your credentials, it wouldn't be possible to decrypt the content. The downside is that if your phone dies on you and you still manage to retrieve the database, it'd be useless. Hence the necessity of doing a backup from time to time. [returnz]  [returnz] I hope that passwords manager makes your life a little easier! [returnz] - munchou

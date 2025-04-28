@@ -97,6 +97,9 @@ class Languages:
     msg_registration_ok_content = load_lang_file(set_lang, "msg_registration_ok_content")
     # msg_app_info_title = load_lang_file(set_lang, "msg_app_info_title")
 
+    msg_timeout_title = load_lang_file(set_lang, "msg_timeout_title")
+    msg_timeout_content = load_lang_file(set_lang, "msg_timeout_content")
+
     
         # LIST SCREEN with ADD/UPDATE ENTRY
     searchfield_text = load_lang_file(set_lang, "searchfield_text")
