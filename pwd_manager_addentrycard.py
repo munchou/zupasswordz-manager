@@ -49,6 +49,13 @@ class AddEntryCard(MDCard):
 
 
     def __init__(self, button_text, **kwargs):
+        """AddEntryCard's init method where the keyboard bind is initialized
+        and constantly checks the user's typed keys, to see if the ESC key (PC)
+        or the BACK BUTTON (Android) were pressed.
+        Sets the self.removed variable to False, as the widget was just created.
+        Becomes True if the user pressed ESC or BACK BUTTON, to remove that widget
+        and unbind the keys watcher.
+        Calls the display_icons function to load the icons by creating the widget."""
         self.button_text = button_text
         super(AddEntryCard, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.esc_or_backbutton)
@@ -60,7 +67,7 @@ class AddEntryCard(MDCard):
         Window.bind(on_keyboard=self.esc_or_backbutton)
 
     def unbind_key(self):
-        Window.bind(on_keyboard=self.esc_or_backbutton)
+        Window.unbind(on_keyboard=self.esc_or_backbutton)
 
 
     def esc_or_backbutton(self, window, key, *largs):

@@ -22,15 +22,15 @@ source.include_exts = py,png,jpg,kv,atlas,toml,ttf,txt
 source.exclude_exts = app_copy.zip, requirements.txt
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-#source.exclude_dirs = temp, bin, dist, .venv, __pycache__
+source.exclude_dirs = temp, bin, __pycache__, _saved-files, keystores, _env, repo_imgs, .git, .vscode
 #source.exclude_dirs = __pycache__
 
 # (list) List of exclusions using pattern matching
 # Do not prefix with './'
-source.exclude_patterns = app_copy.zip, compile_app.py, buildozer.spec, poetry.lock, pyproject.toml, send_app_to_phone.py, .vscode, /tests, /_saved-files
+source.exclude_patterns = app_copy.zip, compile_app.py, buildozer.spec, poetry.lock, pyproject.toml, send_app_to_phone.py, .vscode,
 
 # (str) Application versioning (method 1)
-version = 1.11
+version = 1.12
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]

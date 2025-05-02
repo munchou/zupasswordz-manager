@@ -27,13 +27,19 @@ class BackupSavePage(MDCard):
 
 
     def __init__(self, **kwargs):
+        """BackupSavePage's init method where the keyboard bind is initialized
+        and constantly checks the user's typed keys, to see if the ESC key (PC)
+        or the BACK BUTTON (Android) were pressed.
+        Sets the self.removed variable to False, as the widget was just created.
+        Becomes True if the user pressed ESC or BACK BUTTON, to remove that widget
+        and unbind the keys watcher."""
         super(BackupSavePage, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.esc_or_backbutton)
         self.removed = False
 
 
     def unbind_key(self):
-        Window.bind(on_keyboard=self.esc_or_backbutton)
+        Window.unbind(on_keyboard=self.esc_or_backbutton)
 
 
     def esc_or_backbutton(self, window, key, *largs):
@@ -43,8 +49,11 @@ class BackupSavePage(MDCard):
                 self.removed = True
                 self.unbind_key()
                 return True
-            
+
     def backup_data(self):
+        """Checks if the user's password is the right password, then
+        if the chosen password for data encryption answers the constraints.
+        Calls the data_backup function froms utils if everything's in order."""
         goto_backup = False
         user_pwd = self.backup_user_pwd.text
         password = self.backup_filepwd_input.text

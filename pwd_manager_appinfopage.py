@@ -37,7 +37,7 @@ class InformationPage(MDCard):
 
 
     def unbind_key(self):
-        Window.bind(on_keyboard=self.esc_or_backbutton)
+        Window.unbind(on_keyboard=self.esc_or_backbutton)
 
 
     def esc_or_backbutton(self, window, key, *largs):

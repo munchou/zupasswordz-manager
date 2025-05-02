@@ -386,7 +386,7 @@ def check_system_language():
 
 
 def initialize_config_file(filename=FILENAME):
-    os.environ["app_version"] = "v1.11" # April 28, 2025
+    os.environ["app_version"] = "v1.12" # April 29, 2025
 
     parser = ConfigParser()
     parser.read(filename)

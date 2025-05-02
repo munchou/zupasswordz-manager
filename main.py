@@ -12,9 +12,9 @@ from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy.utils import platform as kv_platform
 from kivy.uix.screenmanager import ScreenManager
-from kivy.properties import ObjectProperty, StringProperty
-from kivy.clock import mainthread
-from kivy.config import Config
+from kivy.properties import ObjectProperty
+# from kivy.clock import mainthread
+# from kivy.config import Config
 from kivy.resources import resource_add_path
 
 import os, plyer
@@ -55,7 +55,22 @@ def unload_file():
 
 
 class WindowState(EventDispatcher):
+    """Event watcher CLASS that checks when the app is minimized (or the screen turned
+    off). On minimizing/scree off, we get a timestamp() of datetime.now().
+
+
+    Same when restoring the app. The difference (in seconds) is checked, and if
+    greater than the desired duration, the "listscreen" is cleared of its widgets and
+    removed, and the user is sent back to the login screen."""
+
     def __init__(self, **kwargs):
+        """Event watcher CLASS that checks when the app is minimized (or the screen turned
+        off). On minimizing/scree off, we get a timestamp() of datetime.now().
+
+
+        Same when restoring the app. The difference (in seconds) is checked, and if
+        greater than the desired duration, the "listscreen" is cleared of its widgets and
+        removed, and the user is sent back to the login screen."""
         super().__init__(**kwargs)
         Window.bind(on_minimize=self._on_minimize, on_restore=self._on_restore)
     
@@ -72,7 +87,7 @@ class WindowState(EventDispatcher):
         self.restore_time = datetime.now().timestamp()
         print("self.restore_time:", self.restore_time, "self.minimize_time:", self.minimize_time)
         print("DIFFERENCE:", self.restore_time - self.minimize_time)
-        if self.restore_time - self.minimize_time > 1:
+        if self.restore_time - self.minimize_time >= 30:
             current_screen = MDApp.get_running_app().screenmanager.current
 
             if current_screen != "loginscreen":
@@ -110,7 +125,6 @@ class LoginScreen(MDScreen):
     new_data = None
     file = None
     file_exists = None
-    # path = "log.json"
     config_filename = "../config.ini"
     input_color = 0, 0.2, 0, 0.5
     btn_color = 0.2, 0, 0, 1
@@ -119,9 +133,11 @@ class LoginScreen(MDScreen):
 
 
     def __init__(self, **kwargs):
-        """LoginScreen's init method where the dummy "user_test" is added in
-        order to test the app without having to create it every time the app
-        is deployed."""
+        """LoginScreen's init method where the keyboard bind is initialized
+        and constantly checks the user's typed keys, to see if the ESC key (PC)
+        or the BACK BUTTON (Android) were pressed.
+        Checks the INI file to see the last conencted user, and - if any - uses
+        it to auto-fill the username's textfield."""
         super(LoginScreen, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.esc_or_backbutton)
         self.username_input.text = pwd_manager_utils.get_last_connected_user()
@@ -138,11 +154,9 @@ class LoginScreen(MDScreen):
 
 
     def esc_or_backbutton(self, window, key, *largs):
-        print("esc_or_backbutton")
+        # print("esc_or_backbutton")
         if key == 27:
-            # pwd_manager_utils.show_message(Languages().msg_close_app_title, Languages().msg_close_app_content)
             self.close_app()
-            # self.removed = True
             return True
     
     def close_app(self):
@@ -161,11 +175,9 @@ class LoginScreen(MDScreen):
 
     def make_master_list(self):
         """A master list of the apps created upon logging in. That list contains
-        all the entries that are decrypted and stored in clear, EXCEPT the password.
-        The password is decrypted only when the user wants to check an entry's details.
-        This is to make the generating of the list faster after the each use of the
-        search bar, instead of having to have to decrypt each entry's field every time
-        the new list is generated."""
+        all the entries still encrypted. Only the app names are not encrypted
+        as to make the generation fast and the navigation smooth. 
+        The entry's details are decrypted only when they are checked."""
         user_data = pwd_manager_utils.load_user_json()
         print("MAKING MASTER LIST")
         for item in user_data:
@@ -193,9 +205,8 @@ class LoginScreen(MDScreen):
         right inputs. If no mistake, the methods are called.
         Import  -> if Android, will ask for permissions, show the file chooser
         then processes the selected TXT file.
-                -> if regular PC, directly processes the file that must be named
-        "username_importbackup.txt".
-        Export  -> if Android, """
+                -> if regular PC, directly processes the file that must start
+        with "{username}_backup_" and end with ".txt"."""
         username_text = self.username_input.text
         current_user = pwd_manager_utils.hasher(username_text, "")
         password_text = self.password_input_login.text
@@ -239,6 +250,8 @@ class LoginScreen(MDScreen):
             self.password_input_login.text = ""
 
     def new_user(self):
+        """Creates a new user (= database) if it doesn't exist already
+        and the inputs answer the constraints."""
         user_data = True
         username_text = self.username_input_reg.text
         password_text = self.password_input_reg.text
@@ -287,16 +300,16 @@ class LoginScreen(MDScreen):
         self.new_entry = SettingsPage(md_bg_color=(1, 1, 1, 0.9))
         self.add_widget(self.new_entry)
     
-    def backup_savepage(self):
-        pwd_manager_utils.show_message("IMPORT BACKUP[import]", "messagejk sdkljdslkfj kldsjfkjdfl dkfjlkdfj")
+    # def backup_savepage(self):
+    #     pwd_manager_utils.show_message("IMPORT BACKUP[import]", "messagejk sdkljdslkfj kldsjfkjdfl dkfjlkdfj")
     
     def app_informationpage(self):
-        print("APP INFO")
+        """Adds the information page (widget) to the login screen."""
         self.new_entry = InformationPage(md_bg_color=(1, 1, 1, 0.9))
         self.add_widget(self.new_entry)
     
     def close_page(self):
-        """Removes the backup data page (widget) that was added
+        """Removes the target page (widget) that was added
         to the login screen"""
         if self.database_page != None:
             self.remove_widget(self.database_page)
@@ -306,6 +319,7 @@ class LoginScreen(MDScreen):
             self.new_entry = None
 
     def remove_database(self):
+        """Adds the remove database page (widget) to the login screen."""
         self.database_page = RemoveDatabasePage(md_bg_color=(1, 1, 1, 0.9))
         self.add_widget(self.database_page)
 
@@ -315,21 +329,20 @@ class PassManagerApp(MDApp):
     screenmanager = ScreenManager()
 
     def __init__(self, **kwargs):
+        """PassManagerApp init where the kv file is loaded as well as
+        the WindowState instance used to check the state of the app (if
+        minimized or restored - used to automatically log out if timeout)."""
         super().__init__(**kwargs)
         Builder.load_file("zupasswordz.kv")
         self.window_state = WindowState()
 
     def build(self):
+        """App build, where the fonts are registered, the theme loaded,
+        all the theme variables stored and the default screen (loginscreen)
+        set and added as a widget to the ScreenManager instance."""
         from kivy.core.text import LabelBase, DEFAULT_FONT
         LabelBase.register(DEFAULT_FONT, "NotoSansJP-Regular.ttf")
-        print("APP RESOLUTION:", Window.size)
-
-        # pwd_manager_utils.initialize_config_file()
-        # I am using 3 main colors + regular ones (like )background and white):
-        # - background
-        # - color1: top/bottom bars
-        # - color2: textfields
-        # - color3: buttons/list
+        # print("APP RESOLUTION:", Window.size)
 
         selected_theme = pwd_manager_utils.load_theme()
 
@@ -433,13 +446,7 @@ class PassManagerApp(MDApp):
         # End of colors
 
         self.screenmanager.add_widget(LoginScreen(name="loginscreen"))
-        # self.screenmanager.add_widget(ListScreen(name="listscreen"))
         return self.screenmanager
-
-    # def restart(self):
-    #     self.screenmanager.clear_widgets()
-    #     self.stop()
-    #     return PassManagerApp().run()
 
 
 if __name__ == "__main__":
