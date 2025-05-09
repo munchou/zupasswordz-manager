@@ -1,6 +1,7 @@
 *last updated on May 9, 2025 - Python 3.10.9*
 
 # ZUPAsswordz Manager - Because online data leak is not a fun trend (really, stop it, fuckerz...)
+[Official web page](https://planetofthedevz.com/zupasswordz_manager/) - [Documentation](https://planetofthedevz.com/zupasswordz_manager/doc/)
 - *Tested on Windows 10 and Python 3.10.2* -> OK
 - *Tested on Ubuntu 24 and Python 3.10.9* -> OK
 - *Tested on Android 14* UP1A (Samsung S22, One UI 6.0) -> OK
@@ -10,6 +11,7 @@
 - *Tested on Android 9 (Samsung S9)* -> not OK, see "issues" below
 - *Tested on Android 9 PQ3A on Asus Nexus 7* -> OK
 - *Other Android phones from testers and acquaintances* -> OK
+
 
 # Issues
 - Android 9: permissions issues (?) only on my S9: refuses to write (to export the data) despite granted permissions
