@@ -16,7 +16,7 @@
 Importing works in TWO ways: 1) choose a backed up file, which requires the user to enter the right password, or 2) choose a normal file (data in clear) written in a pre-defined pattern (refer to the doc once it's available), no password necessary.
 
 # Preview (2024/11/28) (outdated)
-<p align="center">![Image](https://planetofthedevz.com/static/zupwdz/01_loginscreen.png) <img src="repo_imgs/20241124b.png" alt="" width="300"></p>
+![Image](https://planetofthedevz.com/static/zupwdz/01_loginscreen.png) <img src="repo_imgs/20241124b.png" alt="" width="300">
 <p align="center"><img src="repo_imgs/20241124c.png" alt="" width="300"> <img src="repo_imgs/20241124d.png" alt="" width="300"></p>
 <p align="center"><img src="repo_imgs/20241124e.png" alt="" width="300"></p>
 
